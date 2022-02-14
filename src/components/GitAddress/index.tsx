@@ -5,7 +5,7 @@ import { GithubFilled } from '@vicons/antd'
 export default defineComponent({
   name: 'GitAddress',
   setup() {
-    const href = 'https://github.com/WalkAlone0325/tsx-naive-admin'
+    const href = 'https://github.com/jj-sun/athena-boot'
 
     const githubStyle: CSSProperties = {
       width: '50px',

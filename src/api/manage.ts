@@ -1,4 +1,5 @@
 import { axios, Method } from '@/utils/request'
+import { AxiosPromise } from "axios";
 
 const api = {
     user: '/mock/api/user',
@@ -11,7 +12,7 @@ const api = {
 export default api
 
 //post
-export function postAction(url: string, parameter: {}) {
+export function postAction(url: string, parameter: {}): AxiosPromise<Result<any>> {
    /* let sign = signMd5Utils.getSign(url, parameter);
     //将签名和时间戳，添加在请求接口 Header
     let signHeader = {"X-Sign": sign,"X-TIMESTAMP": signMd5Utils.getDateTimeToString()};*/
@@ -45,7 +46,7 @@ export function putAction(url: string,parameter: {}) {
 }
 
 //get
-export function getAction(url: string,parameter: {}) {
+export function getAction(url: string,parameter?: {}): AxiosPromise<Result<any>> {
    /* let sign = signMd5Utils.getSign(url, parameter);
     //将签名和时间戳，添加在请求接口 Header
     let signHeader = {"X-Sign": sign,"X-TIMESTAMP": signMd5Utils.getDateTimeToString()};*/

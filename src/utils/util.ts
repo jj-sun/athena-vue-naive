@@ -1,4 +1,6 @@
 // 生成首页路由
+import Layout from '@/layout/RouteView'
+import InnerLink from '@/layout/components/InnerLink';
 import {RouteRecordRaw} from "vue-router";
 import { isURL } from "@/utils/validate";
 
@@ -7,13 +9,12 @@ export function generateIndexRouter(data: Array<any>) {
         path: '/',
         name: 'dashboard',
         component: () => import('@/layout/index'),
-        meta: { title: '首页' },
-        redirect: '/dashboard/index',
+        redirect: '/dashboard/analysis',
         children: [
             ...generateChildRouters(data)
         ]
     },{
-        path: "*",
+        path: "/:pathMatch(.*)",
         redirect: "/404",
         meta: {
             hidden: true
@@ -25,28 +26,32 @@ export function generateIndexRouter(data: Array<any>) {
 // 生成嵌套路由（子路由）
 
 function  generateChildRouters (data: Array<any>) {
+    const modules = import.meta.glob('../views/*/*')
     const routers = [];
     for (let item of data) {
-        let component = "";
-        if(item.component.indexOf("layouts")>=0){
-            component = item.component;
-        }else{
-            component = "views/"+item.component;
-        }
-
         // eslint-disable-next-line
         let URL = (item.info.url|| '').replace(/{{([^}}]+)?}}/g, (s1:any,s2:any) => eval(s2)) // URL支持{{ window.xxx }}占位符变量
         if (isURL(URL)) {
+            console.log(URL)
             item.info.url = URL;
         }
 
-
+        let componentPath: any;
+        if(item.info.component.indexOf("layout/RouterView") >= 0) {
+            componentPath = Layout
+        } else if(item.info.component.indexOf("layout/InnerLink") >= 0) {
+            componentPath = InnerLink
+        } else {
+            componentPath = modules[`../views/${item.info.component}`]
+        }
+        //console.log(componentPath)
         let menu: RouteRecordRaw =  {
-            path: item.info.path,
+            path: item.info.url,
             name: item.info.name,
             redirect:item.info.redirect,
-            component: () => import(`@/${component}`),
+            component: componentPath,
             meta: {
+                key: item.key,
                 title:item.info.name ,
                 icon: item.info.icon,
                 url:item.info.url ,
@@ -58,6 +63,7 @@ function  generateChildRouters (data: Array<any>) {
                 alwaysShow: item.info.alwaysShow
             }
         }
+        //console.log(menu)
         if(item.alwaysShow){
             menu.redirect = menu.path;
         }

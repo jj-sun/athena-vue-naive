@@ -25,19 +25,20 @@ export default defineComponent({
     // methods
     const getBreadcrumb = () => {
       let matched = route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
+      //console.log(matched)
+      /*const first = matched[0]
 
       if (!isDashboard(first)) {
         matched = (
           [
             {
-              path: '/dashboard',
+              path: '/dashboard/analysis',
               name: 'Dashboard',
               meta: { title: '首页', icon: DashboardFilled as unknown },
             },
           ] as RouteLocationMatched[]
         ).concat(matched)
-      }
+      }*/
       levelList.value = matched.filter(item => item.meta?.title && item.meta.breadcrumb !== false)
     }
 
@@ -54,6 +55,7 @@ export default defineComponent({
 
     // computed
     const breadcrumbList = computed(() => useBreadcrumb(toRaw(levelList.value)))
+    //console.log(breadcrumbList)
 
     // watch
     watch(

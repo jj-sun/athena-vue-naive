@@ -5,6 +5,7 @@ import { useRoutesMenu } from './use-routes-menu'
 import { useStore } from '@/store'
 import { isExternal } from '@/utils/validate'
 import {IBaseTree} from "@/store/interface";
+import { MenuOption } from 'naive-ui'
 
 export default defineComponent({
   name: 'SideBar',
@@ -28,26 +29,25 @@ export default defineComponent({
     const store = useStore()
 
     // 高亮菜单
-    const activeKey = ref(route.name)
+    const activeKey = ref(route.meta.key)
+
     watch(
       () => route.fullPath,
-      () => (activeKey.value = route.name),
+      () => activeKey.value = route.meta.key
     )
-
     // 路由表
     const routes = computed(() => store.getters.permissionList)
+    //console.log(routes)
     // 菜单
-    // const menuOptions = useMenu(toRaw(routes.value))
     const menuOptions = useRoutesMenu(toRaw(routes.value))
-    console.log(menuOptions)
-
+    //console.log(menuOptions)
     // methods
-    const handleClickItem = (key: string) => {
-      if (isExternal(key)) {
+    const handleClickItem = (key: string, item: any) => {
+      if (isExternal(item.path)) {
         // 使用name做外链跳转
-        return window.open(key)
+        return window.open(item.path)
       } else {
-        return router.push({ name: key })
+        return router.push({ path: item.path })
       }
     }
 
@@ -61,7 +61,7 @@ export default defineComponent({
         collapsedIconSize={22}
         options={menuOptions}
         onUpdateValue={handleClickItem}
-        v-model={[activeKey.value, 'value']}
+        v-model:value={activeKey.value}
       />
     )
   },

@@ -5,7 +5,7 @@ import { IAppState, IRootState } from '../interface'
 const appModules: Module<IAppState, IRootState> = {
   namespaced: true,
   state: {
-    collapsed: getCollapsed() === 'close',
+    collapsed: getCollapsed() !== 'close',
     device: 'desktop',
     size: 'medium',
   },

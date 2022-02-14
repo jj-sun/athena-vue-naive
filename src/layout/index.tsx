@@ -111,7 +111,7 @@ export default defineComponent({
 
           {/* 主体内容 */}
           <NLayoutContent
-            contentStyle={{ padding: '24px' }}
+            contentStyle={{ padding: '16px' }}
             nativeScrollbar={false}
             style={marginStyle.value}
             position={position.value}>

@@ -10,10 +10,11 @@ import { renderIcon } from '@/utils'
  * @returns 返回适应的菜单
  */
 export function useBreadcrumb(routes: RouteRecordRaw[]) {
+  //console.log(routes)
   return routes.map(route => {
-    if (route.children?.length === 1) {
-      route = route.children[0]
-    }
+    // if (route.children?.length === 1) {
+    //   route = route.children[0]
+    // }
     const currentMenu: MenuOption = {
       label: route.meta?.title,
       key: route.name as string,

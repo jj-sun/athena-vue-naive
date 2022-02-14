@@ -40,7 +40,7 @@ export function filterAsyncRoutes(routes: RouteRecordRaw[], roles: string[]) {
 const permissModule: Module<IPermissState, IRootState> = {
   namespaced: true,
   state: {
-    routes: [],
+    routes: constantRoutes,
     addRoutes: [],
   },
   mutations: {

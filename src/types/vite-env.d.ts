@@ -10,6 +10,21 @@ declare global {
     $notification: NotificationApi,
     _CONFIG: any
   }
+  interface Result<T> {
+    code: number,
+    message: string,
+    success: boolean,
+    result: T,
+    timestamp: number
+  }
+  interface BaseModel {
+    id: string,
+    creator: string,
+    ctime: string,
+    delFlag: number,
+    editor: string,
+    mtime: string,
+  }
 }
 
 export interface ISettings {

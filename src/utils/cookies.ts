@@ -9,8 +9,10 @@ export class Keys {
 export const getCollapsed = () => Cookies.get(Keys.collapsedKey)
 export const setCollapsed = (key: string) => Cookies.set(Keys.collapsedKey, key)
 
+//1小时
+let time = new Date(new Date().getTime() + 1 * 60 * 60 * 1000)
 // token
-export const setToken = (token: string) => Cookies.set(Keys.tokenKey, token)
+export const setToken = (token: string) => Cookies.set(Keys.tokenKey, token, { expires: time })
 export const getToken = () => Cookies.get(Keys.tokenKey)
 export const removeToken = () => Cookies.remove(Keys.tokenKey)
 
