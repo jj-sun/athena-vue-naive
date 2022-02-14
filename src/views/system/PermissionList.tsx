@@ -4,6 +4,8 @@ import { getAction, deleteAction } from "@/api/manage";
 import { RowKey } from "naive-ui/lib/data-table/src/interface";
 import PermissionModal from './modules/PermissionModal';
 import { PlusOutlined } from '@vicons/antd'
+import * as antd from '@vicons/antd'
+import { renderIcon } from '@/utils/index'
 
 interface DataItem extends BaseModel {
     parentId: string,
@@ -38,7 +40,10 @@ const createColumns = ( { addSubordinate,edit, handleDelete } ): Array<DataTable
         },
         {
             title: 'icon',
-            key: 'icon'
+            key: 'icon',
+            render(rowData: DataItem) {
+                return rowData.icon ? h(NIcon, null, { default: () => h(antd[rowData.icon]) }) : ''
+            }
         }, {
             title: '组件',
             key: 'component'
