@@ -7,8 +7,6 @@ import {
   IeOutlined,
 } from '@vicons/antd'
 import Layout from '@/layout'
-import nestedRouter from './modules/nested'
-import tableRouter from './modules/table'
 
 /**
  * 参数解析：
@@ -78,8 +76,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
 ]
 
 export const asyncRoutes: Array<RouteRecordRaw> = [
-  nestedRouter,
-  tableRouter,
   {
     path: '/icon',
     component: Layout,
@@ -117,21 +113,21 @@ export const asyncRoutes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  {
-    path: '/profile',
-    component: Layout,
-    name: 'Profile',
-    redirect: '/profile/index',
-    meta: { hidden: true },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: UsbFilled, noCache: true },
-      },
-    ],
-  },
+  // {
+  //   path: '/profile',
+  //   component: Layout,
+  //   name: 'Profile',
+  //   redirect: '/profile/index',
+  //   meta: { hidden: true },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/profile'),
+  //       name: 'Profile',
+  //       meta: { title: 'Profile', icon: UsbFilled, noCache: true },
+  //     },
+  //   ],
+  // },
 ]
 
 /*

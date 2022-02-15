@@ -5,7 +5,7 @@ import { GithubFilled } from '@vicons/antd'
 export default defineComponent({
   name: 'GitAddress',
   setup() {
-    const href = 'https://github.com/jj-sun/athena-boot'
+    const href = 'https://github.com/jj-sun/athena-vue-naive'
 
     const githubStyle: CSSProperties = {
       width: '50px',

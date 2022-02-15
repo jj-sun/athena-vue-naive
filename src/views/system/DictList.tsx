@@ -193,12 +193,12 @@ export default defineComponent({
                                 <NGrid xGap={12} cols={4}>
                                     <NGi>
                                         <NFormItem label="字典名称" >
-                                            <NInput  v-model:value={ search.dictName } placeholder='输入用户名'/>
+                                            <NInput  v-model:value={ search.dictName } placeholder='输入字典名称'/>
                                         </NFormItem>
                                     </NGi>
                                     <NGi>
                                         <NFormItem label="字典编码">
-                                            <NInput v-model:value={ search.dictCode } placeholder='输入姓名'/>
+                                            <NInput v-model:value={ search.dictCode } placeholder='输入字典编码'/>
                                         </NFormItem>
                                     </NGi>
                                     <NGi>

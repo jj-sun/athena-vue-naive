@@ -1,8 +1,8 @@
-import { VNode } from 'vue'
 import { RouteRecordRaw } from 'vue-router'
 import { MenuOption } from 'naive-ui'
 import { AimOutlined } from '@vicons/antd'
 import { renderIcon } from '@/utils'
+import * as antd from '@vicons/antd'
 
 /**
  * 返回面包屑所用菜单格式
@@ -18,7 +18,7 @@ export function useBreadcrumb(routes: RouteRecordRaw[]) {
     const currentMenu: MenuOption = {
       label: route.meta?.title,
       key: route.name as string,
-      icon: renderIcon((route.meta?.icon as VNode) || AimOutlined),
+      icon: renderIcon(antd[route.meta?.icon] || AimOutlined),
       disabled: route.path === '/',
     }
 

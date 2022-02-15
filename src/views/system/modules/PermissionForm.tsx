@@ -1,7 +1,10 @@
 import { defineComponent, onMounted, reactive, ref } from "vue";
-import { NSpin, NForm, NInput, NGrid, NFormItemGi, FormValidationError,NRadioGroup, NRadio,NSpace, NSwitch, NInputNumber, NTreeSelect } from "naive-ui";
+import { NSpin, NForm, NInput, NGrid, NFormItemGi, FormValidationError,NRadioGroup, NRadio,NSpace, NSwitch, NInputNumber, NTreeSelect, NIcon, NButton, NInputGroup } from "naive-ui";
 import { getAction, httpAction } from "@/api/manage";
 import { Method } from '@/utils/request';
+import Icons from "@/components/icons";
+import { SettingTwotone } from '@vicons/antd'
+import * as antd from '@vicons/antd'
 
 export default defineComponent({
     name: 'PermissionForm',
@@ -24,6 +27,9 @@ export default defineComponent({
         })
         const treeSelectOptions = ref([])
         const formRef = ref()
+
+        const iconsRef = ref()
+
         const rules = {
             name: [{
                 required: true,
@@ -98,6 +104,12 @@ export default defineComponent({
                 }
             })
         }
+        const chooseIcon = () => {
+            iconsRef.value.showIcon()
+        }
+        const handleIconChoose = (icon: string) => {
+            form.value.icon = icon
+        }
         onMounted(() => {
             loadTree()
         })
@@ -160,7 +172,18 @@ export default defineComponent({
                             {
                                 form.value.type !== 2 ?
                                 <NFormItemGi span={24} label="菜单图标">
-                                    <NInput v-model:value={form.value.icon} />
+                                    <NInputGroup>
+                                        <NInput disabled style={ 'width: 90%' } v-model:value={form.value.icon} placeholder='请选择图标'>
+                                            {{
+                                                prefix: () => <NIcon component={ antd[form.value.icon] }/>
+                                            }}
+                                        </NInput>
+                                        <NButton type="default" onClick={ chooseIcon }>
+                                            {{
+                                                icon: () => <NIcon component={ SettingTwotone }/>
+                                            }}
+                                        </NButton>
+                                    </NInputGroup>
                                 </NFormItemGi>
                                 : <></>
                             }
@@ -173,6 +196,7 @@ export default defineComponent({
                             </NFormItemGi>
                         </NGrid>
                     </NForm>
+                    <Icons ref={ iconsRef } onOk={ handleIconChoose }/>
                 </NSpin>
             )
         }

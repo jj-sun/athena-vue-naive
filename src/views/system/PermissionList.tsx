@@ -5,18 +5,16 @@ import { RowKey } from "naive-ui/lib/data-table/src/interface";
 import PermissionModal from './modules/PermissionModal';
 import { PlusOutlined } from '@vicons/antd'
 import * as antd from '@vicons/antd'
-import { renderIcon } from '@/utils/index'
 
 interface DataItem extends BaseModel {
     parentId: string,
     parentName: string,
-    
     name: string,
     url: string,
     component: null
     perms: string,
     type: number,
-    icon: string,
+    icon?: string,
     orderNum: number,
     children: Array<DataItem>
 }
@@ -42,7 +40,7 @@ const createColumns = ( { addSubordinate,edit, handleDelete } ): Array<DataTable
             title: 'icon',
             key: 'icon',
             render(rowData: DataItem) {
-                return rowData.icon ? h(NIcon, null, { default: () => h(antd[rowData.icon]) }) : ''
+                return h(NIcon, { component: antd[rowData?.icon] }, { default: () => '' })
             }
         }, {
             title: '组件',

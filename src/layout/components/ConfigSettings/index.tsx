@@ -1,4 +1,4 @@
-import { computed, CSSProperties, defineComponent, watch } from 'vue'
+import { CSSProperties, defineComponent } from 'vue'
 import {
   NBadge,
   NDivider,
@@ -56,14 +56,15 @@ export default defineComponent({
       marginTop: '5px',
     }
 
+    console.log(globalTheme.value)
+
     return () => (
       <NDrawer
         width={290}
         placement="right"
-        // v-model={[active.value, 'show']}
         show={openConfig.value}
         onUpdateShow={() => changeSetting('openConfig', false)}
-        nativeScrollbar={false}>
+        nativeScrollbar={true}>
         <NDrawerContent title="标题">
           <div>
             {/* 主题 */}

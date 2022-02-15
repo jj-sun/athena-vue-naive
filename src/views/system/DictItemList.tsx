@@ -205,7 +205,7 @@ export default defineComponent({
                                     <NGrid xGap={8} cols={3}>
                                         <NGi>
                                             <NFormItem label="名称" >
-                                                <NInput  v-model:value={ search.itemText } placeholder='请输入用名称'/>
+                                                <NInput  v-model:value={ search.itemText } placeholder='请输入名称'/>
                                             </NFormItem>
                                         </NGi>
                                         <NGi>

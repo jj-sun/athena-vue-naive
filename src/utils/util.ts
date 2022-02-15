@@ -51,6 +51,7 @@ function  generateChildRouters (data: Array<any>) {
             redirect:item.info.redirect,
             component: componentPath,
             meta: {
+                affix: item.info.name == '首页',
                 key: item.key,
                 title:item.info.name ,
                 icon: item.info.icon,
