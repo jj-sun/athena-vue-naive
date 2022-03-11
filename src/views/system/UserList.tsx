@@ -10,6 +10,7 @@ interface DataItem extends BaseModel {
     realname: string,
     email: string,
     mobile: string,
+    sex: number,
     password: string,
     salt: string,
     userType: number,
@@ -33,6 +34,18 @@ const createColumns = ( { edit, handleDelete } ): Array<DataTableColumn<DataItem
         {
             title: '姓名',
             key: 'realname'
+        },{
+            title: '性别',
+            key: 'key',
+            render(rowData: DataItem) {
+                let type = rowData.sex === 1 ? 'success' : 'error'
+                let name = rowData.sex === 1 ? '男性' : '女性'
+                if(rowData.sex === 0) {
+                    type = 'default'
+                    name = '保密'
+                }
+                return h(NTag, { type: type, size: 'small' }, { default: () => name })
+            }
         },
         {
             title: '邮箱',
