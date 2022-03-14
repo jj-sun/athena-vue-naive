@@ -22,7 +22,7 @@ export default defineComponent({
       yRef,
       showDropdownRef,
     } = useContextmenu()
-
+    // class={isActive(tag) ? 'active' : 'noactive'} 
     return () => (
       <NElement style={{ borderColor: 'var(--border-color)' }}>
         <NSpace style={{ maxHeight: '34px', marginLeft: '16px' }}>
@@ -31,7 +31,7 @@ export default defineComponent({
               onContextmenu={e => handleContextMenu(tag, e)}
               style={{ borderColor: 'rgb(42, 148, 125)' }}>
               <NTag
-                class={isActive(tag) ? 'active' : ''}
+                type={ isActive(tag) ? 'success' : 'default' }
                 key={tag.path}
                 closable={!tag.meta.affix}
                 onClose={withModifiers(() => closeSelectedTag(tag), ['prevent', 'stop'])}>
