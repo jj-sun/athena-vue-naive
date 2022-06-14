@@ -1,31 +1,15 @@
-import { InjectionKey } from 'vue'
-import { createStore, useStore as baseUseStore, Store, ModuleTree } from 'vuex'
-import getters from './getters'
-import { IRootState } from './interface'
+import type { App } from 'vue'
+import { createPinia } from 'pinia'
+import { useUserStore } from './modules/user'
+import {  useSettingsStore} from './modules/settings'
+import { useAppStore } from './modules/app'
+import { usePermissionStore } from './modules/permission'
+import { useTagsViewStore } from './modules/tagsView'
 
-/**
- * 自动导包
- * @returns modules
- */
-const allModules = import.meta.globEager('./modules/*.ts')
+const store = createPinia()
 
-const modules: ModuleTree<IRootState> = {}
+export { useUserStore,useSettingsStore,useAppStore,usePermissionStore,useTagsViewStore }
 
-Object.keys(allModules).map(path => {
-  const filename = path.split('/')[2].split('.')[0]
-  modules[filename] = allModules[path][filename] || allModules[path].default || allModules[path]
-})
-
-// 定义注入类型
-export const key: InjectionKey<Store<IRootState>> = Symbol()
-
-const store = createStore({
-  getters,
-  modules,
-})
-
-export function useStore() {
-  return baseUseStore(key)
+export function setupStore(app: App<Element>) {
+  app.use(store)
 }
-
-export default store

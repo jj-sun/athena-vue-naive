@@ -1,9 +1,8 @@
-import {h, defineComponent, reactive, ref,Ref, onMounted, CSSProperties} from "vue";
+import {h, defineComponent, reactive, onMounted, CSSProperties} from "vue";
 import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, NDivider, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag } from "naive-ui";
-import { getAction, deleteAction } from "@/api/manage";
-import { RowKey } from "naive-ui/lib/data-table/src/interface";
 import UserModal from './modules/UserModal';
 import { PlusOutlined } from '@vicons/antd'
+import useBaseList from "@/hooks/useBaseList";
 
 interface DataItem extends BaseModel {
     username: string,
@@ -17,7 +16,7 @@ interface DataItem extends BaseModel {
     roleIdList: null 
 }
 
-const createColumns = ( { edit, handleDelete } ): Array<DataTableColumn<DataItem>> => {
+const createColumns = ( { edit,handleDelete }: { edit:(id:string) => void,handleDelete:(id:string) => void } ): Array<DataTableColumn<DataItem>> => {
     return [
         {
             type: 'selection',
@@ -44,7 +43,8 @@ const createColumns = ( { edit, handleDelete } ): Array<DataTableColumn<DataItem
                     type = 'default'
                     name = '保密'
                 }
-                return h(NTag, { type: type, size: 'small' }, { default: () => name })
+                //return h(NTag, { type: type, size: 'small' }, { default: () => name })
+                return (<NTag type={type} size='small'>{ name }</NTag>)     
             }
         },
         {
@@ -53,13 +53,17 @@ const createColumns = ( { edit, handleDelete } ): Array<DataTableColumn<DataItem
         }, {
             title: '手机号码',
             key: 'mobile'
+        },{
+            title: '部门',
+            key: 'deptCode_dictText'
         }, {
             title: '状态',
             key: 'delFlag',
             render(rowData: DataItem) {
                 let type = rowData.delFlag === 0 ? 'success' : 'error'
                 let name = rowData.delFlag === 0 ? '正常' : '禁用'
-                return h(NTag, { type: type, size: 'small' }, { default: () => name })
+                //return h(NTag, { type: type, size: 'small' }, { default: () => name })
+                return (<NTag type={type} size='small'>{ name }</NTag>)
             }
         }, {
             title: '操作',
@@ -85,130 +89,40 @@ export default defineComponent({
             delete: '/sys/user/delete',
             deleteBatch: '/sys/user/deleteBatch',
         })
-        const  search = reactive({
+
+
+        const search = reactive({
             username: '',
             realname: '',
             page: 1,
             pageSize: 10
         })
-        const checkedRowKeysRef: Ref<Array<RowKey>> = ref([])
 
-        const loading = ref(false)
-        const pagination = reactive({
-            page: 1,
-            pageCount: 1,
-            pageSize: 10,
-            itemCount: 0,
-            showSizePicker: true,
-            pageSizes: [10,20,30,40],
-            prefix: ( { itemCount  } ) => {
-                return `共${itemCount}条`
-            },
-            onUpdatePage: (page: number) => {
-                pagination.page = page
-                loadData(0)
-            },
-            onUpdatePageSize: (pageSize: number) => {
-                pagination.pageSize = pageSize
-                pagination.page = 1
-                searchQuery()
-            }
-        })
-        const data: Ref<DataItem[]> = ref([])
-
-        const modalForm = ref()
-
-        const tableOperator: CSSProperties = {
-            marginBottom: '8px'
-        }
-
-        const rowKey = (rowData: DataItem): string => {
-            return rowData.id
-        }
-
-        const getSearchQuery = () => {
-            let params = Object.assign({}, search)
-            params.page = pagination.page
-            params.pageSize = pagination.pageSize
-            return params
-        }
-
-        const loadData = (args: number) => {
-            loading.value = true
-            if(args === 1) {
-                pagination.page = 1
-            }
-            let params = getSearchQuery()
-            // @ts-ignore
-            getAction(url.list, params).then((r: Result<any>) => {
-                if(r.success) {
-                    data.value = r.result.list
-                    pagination.itemCount = r.result.totalCount
-                    pagination.pageCount = r.result.totalPage
-                } else {
-                    window.$message.error(r.message)
-                }
-                loading.value = false
-
-            })
-        }
-
-        const handleAdd = () => {
-            modalForm.value.add()
-        }
-
-        const edit = (id: string) => {
-            //let data = toRaw(rowData)
-            modalForm.value.edit(id)
-        }
-        const handleDelete = (id: string) => {
-            // @ts-ignore
-            deleteAction(url.delete, { id: id }).then((r: Result<any>) => {
-                if(r.success) {
-                    window.$message.success(r.message)
-                    reload()
-                } else {
-                    window.$message.error(r.message)
-                }
-            })
-        }
-        const handleBatchDelete = () => {
-          
-          if(checkedRowKeysRef.value.length > 0) {
-            let ids = checkedRowKeysRef.value.join()
-            // @ts-ignore
-            deleteAction(url.deleteBatch, { ids: ids }).then((r: Result<any>) => {
-                if(r.success) {
-                    window.$message.success(r.message)
-                    reload()
-                    clearSelected()
-                } else {
-                    window.$message.error(r.message)
-                }
-            })
-          }
-        
-        }
-        const handleCheck = (rowKeys: Array<RowKey>) => {
-            checkedRowKeysRef.value =  rowKeys
-        }
-        const clearSelected = () => {
-            checkedRowKeysRef.value.length = 0
-        }
-        const reload = () => {
-            loadData(1)
-        }
-        const modalFormOk = () => {
-            reload()
-        }
-
-        const searchQuery = () => {
-            loadData(1)
-        }
         const searchReset = () => {
             search.username = ''
             search.realname = ''
             loadData(1)
+        }
+
+        const { 
+            checkedRowKeysRef,
+            loading,
+            pagination,
+            data,
+            modalForm,
+            rowKey,
+            loadData,
+            handleAdd,
+            edit,
+            handleDelete,
+            handleBatchDelete,
+            handleCheck,
+            clearSelected,
+            modalFormOk,
+            searchQuery} = useBaseList(url, search)
+        
+        const tableOperator: CSSProperties = {
+            marginBottom: '8px'
         }
 
         onMounted(() => {

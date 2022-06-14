@@ -11,12 +11,12 @@ import AppMain from './components/AppMain'
 import Logo from './components/Logo'
 import { useSettings } from '@/hooks/use-settings'
 import SideBar from './components/SideBar'
-import { useStore } from '@/store'
+import { useAppStore } from '@/store'
 
 export default defineComponent({
   name: 'Layout',
   setup() {
-    const store = useStore()
+    const store = useAppStore() 
 
     // computed
     const {
@@ -27,7 +27,7 @@ export default defineComponent({
       showTrigger,
       showLogo,
     } = useSettings()
-    const collapsed = computed(() => store.getters.collapsed)
+    const collapsed = computed(() => store.collapsed)
     // 反转
     const inverted = computed(() =>
       ['dark', 'header-dark'].includes(sideOrHeaderTheme.value),
@@ -79,8 +79,8 @@ export default defineComponent({
             inverted={inverted.value}
             collapsed={collapsed.value}
             showTrigger={showTrigger.value}
-            onCollapse={() => store.dispatch('app/toggleCollapsed')}
-            onExpand={() => store.dispatch('app/toggleCollapsed')}>
+            onCollapse={() => store.toggleCollapsed()}
+            onExpand={() => store.toggleCollapsed()}>
             <Logo collapsed={collapsed.value} v-show={showLogo.value} />
             <SideBar
               v-model={[collapsed.value, 'collapsed']}
@@ -117,7 +117,6 @@ export default defineComponent({
             position={position.value}>
             {/* 路由展示 */}
             <AppMain />
-
             {/* 底部 */}
             {/* <NLayoutFooter style={footerStyle}>
               <h2>底部</h2>

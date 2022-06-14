@@ -1,7 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router/routes'
 import type { RouteRecordRaw } from 'vue-router'
-import { Module } from 'vuex'
-import { IPermissState, IRootState } from '../interface'
+import { PermissState, IRootState } from '../interface'
 
 /**
  * 判断是否拥有权限
@@ -37,29 +36,28 @@ export function filterAsyncRoutes(routes: RouteRecordRaw[], roles: string[]) {
   return res
 }
 
-const permissModule: Module<IPermissState, IRootState> = {
-  namespaced: true,
-  state: {
+export const usePermissionStore = defineStore('permission', {
+  state: (): PermissState => ({
     routes: constantRoutes,
-    addRoutes: [],
-  },
-  mutations: {
-    // 设置 routes
-    SET_ROUTES: (state, routes) => {
-      state.addRoutes = routes
-      state.routes = constantRoutes.concat(routes)
-    },
-  },
+    addRoutes: []
+  }),
+  // mutations: {
+  //   // 设置 routes
+  //   SET_ROUTES: (state, routes) => {
+  //     state.addRoutes = routes
+  //     state.routes = constantRoutes.concat(routes)
+  //   },
+  // },
   actions: {
+
     // 生成路由
-    generateRoutes({ commit }, routes) {
+    generateRoutes(routes: any) {
       return new Promise(resolve => {
         let routelist = routes.constRoutes;
-        commit('SET_ROUTES', routelist)
+        this.addRoutes = routes
+        this.routes = constantRoutes.concat(routes)
         resolve(routelist)
       })
     },
   },
-}
-
-export default permissModule
+})

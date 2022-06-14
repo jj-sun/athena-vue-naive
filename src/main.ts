@@ -8,14 +8,14 @@ import router from '@/router'
 import '@/permission'
 
 // store
-import store, { key } from '@/store'
+import { setupStore } from '@/store'
 
 // 通用字体
 import 'vfonts/Lato.css'
 
 const app = createApp(App)
 
-app.use(store, key)
+setupStore(app)
 app.use(router)
 
 app.mount('#app')

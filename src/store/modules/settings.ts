@@ -1,6 +1,4 @@
 import { ISettings } from '@/types/vite-env'
-import { Module } from 'vuex'
-import { IRootState } from '../interface'
 import defaultSettings from '@/settings'
 
 const {
@@ -20,9 +18,8 @@ const {
 
 export type TKey = keyof ISettings
 
-const settingsModule: Module<ISettings, IRootState> = {
-  namespaced: true,
-  state: {
+export const useSettingsStore = defineStore('setting', {
+  state:():ISettings => ({
     globalTheme,
     sideOrHeaderTheme,
     themeEditor,
@@ -35,20 +32,16 @@ const settingsModule: Module<ISettings, IRootState> = {
     fixedHeader,
     adminTitle,
     openConfig,
-  },
-  mutations: {
-    CHANGE_SETTING: (state, { key, value }: { key: TKey; value: string | boolean }) => {
+  }),
+  actions: {
+    updateSetting({ key, value }: { key: TKey; value: string | boolean }) {
       console.log(key, value)
-      if (state.hasOwnProperty(key)) {
-        ;(state[key] as string | boolean) = value
+      if (this.$state.hasOwnProperty(key)) {
+        ;(this.$state[key] as string | boolean) = value
       }
     },
-  },
-  actions: {
-    changeSetting({ commit }, data) {
-      commit('CHANGE_SETTING', data)
+    changeSetting(data: any) {
+      this.updateSetting(data)
     },
   },
-}
-
-export default settingsModule
+})

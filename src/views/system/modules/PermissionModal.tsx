@@ -39,6 +39,11 @@ export default defineComponent({
             realForm.value.submitForm()
         }
         
+
+        const updateVisible = (show: boolean) => {
+            visible.value = show
+        }
+
         expose({
             add,
             addSubordinate,
@@ -48,7 +53,7 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <NDrawer show={ visible.value } placement="right" width="600px">
+                    <NDrawer show={ visible.value } placement="right" width="600px" onUpdate:show={ updateVisible }>
                         <NCard style={ 'width: 600px' }
                                 title={ title.value }
                                 bordered={ false } 

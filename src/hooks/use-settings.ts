@@ -1,21 +1,21 @@
 import { computed } from 'vue'
-import { useStore } from '@/store'
+import { useSettingsStore } from '@/store'
 
 export function useSettings() {
-  const store = useStore()
+  const store = useSettingsStore()
 
   return {
-    globalTheme: computed(() => store.state.settings.globalTheme),
-    sideOrHeaderTheme: computed(() => store.state.settings.sideOrHeaderTheme),
-    themeEditor: computed(() => store.state.settings.themeEditor),
-    menuMode: computed(() => store.state.settings.menuMode),
-    showTrigger: computed(() => store.state.settings.showTrigger),
-    showLogo: computed(() => store.state.settings.showLogo),
-    tagsView: computed(() => store.state.settings.tagsView),
-    breadcrumb: computed(() => store.state.settings.breadcrumb),
-    breadcrumbIcon: computed(() => store.state.settings.breadcrumbIcon),
-    fixedHeader: computed(() => store.state.settings.fixedHeader),
-    adminTitle: computed(() => store.state.settings.adminTitle),
-    openConfig: computed(() => store.state.settings.openConfig),
+    globalTheme: computed(() => store.globalTheme),
+    sideOrHeaderTheme: computed(() => store.sideOrHeaderTheme),
+    themeEditor: computed(() => store.themeEditor),
+    menuMode: computed(() => store.menuMode),
+    showTrigger: computed(() => store.showTrigger),
+    showLogo: computed(() => store.showLogo),
+    tagsView: computed(() => store.tagsView),
+    breadcrumb: computed(() => store.breadcrumb),
+    breadcrumbIcon: computed(() => store.breadcrumbIcon),
+    fixedHeader: computed(() => store.fixedHeader),
+    adminTitle: computed(() => store.adminTitle),
+    openConfig: computed(() => store.openConfig),
   }
 }

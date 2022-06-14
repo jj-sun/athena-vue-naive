@@ -2,30 +2,31 @@ import { ISettings } from '@/types/vite-env'
 import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 export interface IRootState {
-  app: IAppState
-  permission: IPermissState
-  tagsView: ITagsViewState
+  app: AppState
+  permission: PermissState
+  tagsView: TagsViewState
   settings: ISettings
-  user: IUserState
+  user: UserState
 }
 
-export interface IAppState {
+export interface AppState {
   collapsed: boolean
+  showDrawer: boolean,
   device: string
   size: string
 }
 
-export interface IPermissState {
+export interface PermissState {
   routes: RouteRecordRaw[]
   addRoutes: RouteRecordRaw[]
 }
 
-export interface ITagsViewState {
+export interface TagsViewState {
   visitedViews: RouteLocationNormalized[]
   cachedViews: RouteLocationNormalized[]
 }
 
-export interface IUserState {
+export interface UserState {
   token: string | undefined
   username: string,
   realname: string,

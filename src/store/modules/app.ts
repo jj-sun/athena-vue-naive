@@ -1,30 +1,18 @@
-import { getCollapsed, Keys, setCollapsed } from '@/utils/cookies'
-import { Module } from 'vuex'
-import { IAppState, IRootState } from '../interface'
+import { AppState } from '../interface'
 
-const appModules: Module<IAppState, IRootState> = {
-  namespaced: true,
-  state: {
-    collapsed: getCollapsed() !== 'close',
+export const useAppStore = defineStore('app',{
+  state: (): AppState => ({
+    collapsed: false,
+    showDrawer: false,
     device: 'desktop',
     size: 'medium',
-  },
-  mutations: {
-    TOGGLE_COLLAPSED: state => {
-      state.collapsed = !state.collapsed
-      if (state.collapsed) {
-        setCollapsed('open')
-      } else {
-        setCollapsed('close')
-      }
-    },
-  },
+  }),
   actions: {
-    // 切换 collapsed
-    toggleCollapsed({ commit }) {
-      commit('TOGGLE_COLLAPSED')
+    updateSettings(partial: Partial<AppState>) {
+      this.$patch(partial)
     },
+    toggleCollapsed() {
+      return this.collapsed = !this.collapsed
+    }
   },
-}
-
-export default appModules
+})

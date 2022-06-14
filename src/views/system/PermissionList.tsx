@@ -1,10 +1,10 @@
 import {h, defineComponent, reactive, ref,Ref, onMounted, CSSProperties} from "vue";
 import { NCard, NDataTable, NButton, NSpace, NDivider, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag } from "naive-ui";
 import { getAction, deleteAction } from "@/api/manage";
-import { RowKey } from "naive-ui/lib/data-table/src/interface";
 import PermissionModal from './modules/PermissionModal';
 import { PlusOutlined } from '@vicons/antd'
 import * as antd from '@vicons/antd'
+import useBaseList from "@/hooks/useBaseList";
 
 interface DataItem extends BaseModel {
     parentId: string,
@@ -81,25 +81,13 @@ export default defineComponent({
             username: '',
             realname: ''
         })
-        const checkedRowKeysRef: Ref<Array<RowKey>> = ref([])
-
-        const loading = ref(false)
-       
-        const data: Ref<DataItem[]> = ref([])
-
-        const modalForm = ref()
-
+    
         const tableOperator: CSSProperties = {
             marginBottom: '8px'
         }
 
-        const rowKey = (rowData: DataItem): string => {
-            return rowData.id
-        }
-
         const getSearchQuery = () => {
             let params = Object.assign({}, search)
-           
             return params
         }
 
@@ -115,20 +103,13 @@ export default defineComponent({
                     window.$message.error(r.message)
                 }
                 loading.value = false
-
             })
         }
-
-        const handleAdd = () => {
-            modalForm.value.add()
-        }
+ 
         const addSubordinate = (parentId: string) => {
             modalForm.value.addSubordinate(parentId)
         }
 
-        const edit = (id: string) => {
-            modalForm.value.edit(id)
-        }
         const handleDelete = (id: string) => {
             // @ts-ignore
             deleteAction(url.delete, { id: id }).then((r: Result<any>) => {
@@ -157,12 +138,7 @@ export default defineComponent({
           }
         
         }
-        const handleCheck = (rowKeys: Array<RowKey>) => {
-            checkedRowKeysRef.value =  rowKeys
-        }
-        const clearSelected = () => {
-            checkedRowKeysRef.value.length = 0
-        }
+     
         const reload = () => {
             loadData()
         }
@@ -170,14 +146,16 @@ export default defineComponent({
             reload()
         }
 
-        const searchQuery = () => {
-            loadData()
-        }
-        const searchReset = () => {
-            search.username = ''
-            search.realname = ''
-            loadData()
-        }
+        const { 
+            checkedRowKeysRef,
+            loading,
+            data,
+            modalForm,
+            rowKey,
+            handleAdd,
+            edit,
+            handleCheck,
+            clearSelected} = useBaseList(url, search)
 
         onMounted(() => {
             loadData()

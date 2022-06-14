@@ -9,7 +9,7 @@ import {
   NTooltip,
   useMessage,
 } from 'naive-ui'
-import { useStore } from '@/store'
+import { useSettingsStore } from '@/store'
 import { useSettings } from '@/hooks/use-settings'
 import navLeft from '@/assets/images/nav-theme-dark.svg'
 import navTop from '@/assets/images/nav-horizontal.svg'
@@ -21,7 +21,7 @@ import { TKey } from '@/store/modules/settings'
 export default defineComponent({
   name: 'ConfigSettings',
   setup() {
-    const store = useStore()
+    const settingStore = useSettingsStore()
     const message = useMessage()
 
     // computed
@@ -42,7 +42,7 @@ export default defineComponent({
     // methods
     const changeSetting = (key: TKey, value: boolean | string) => {
       message.success(`${key}切换成功！`)
-      store.dispatch('settings/changeSetting', { key, value })
+      settingStore.changeSetting({ key, value })
     }
 
     // style

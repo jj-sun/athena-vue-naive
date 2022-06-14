@@ -9,7 +9,7 @@ import {
 import { CSSProperties, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { LogoutOutlined } from '@vicons/antd'
-import { useStore } from '@/store'
+import { useUserStore,useSettingsStore } from '@/store'
 import avatar from '@/assets/images/avatar.jpg'
 
 export default defineComponent({
@@ -21,7 +21,8 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter()
-    const store = useStore()
+    const userStore = useUserStore()
+    const settingStore = useSettingsStore()
     const dialog = useDialog()
     const message = useMessage()
 
@@ -59,7 +60,7 @@ export default defineComponent({
         negativeText: '取消',
         onPositiveClick: () => {
           //! 退出登录
-          store.dispatch('user/logout')
+          userStore.logout()
         },
         onNegativeClick: () => {
           message.success('你点击了取消！')
@@ -74,7 +75,7 @@ export default defineComponent({
           router.push('/user/profile')
           break
         case 'layoutsetting':
-          store.dispatch('settings/changeSetting', {
+          settingStore.changeSetting({
             key: 'openConfig',
             value: true,
           })

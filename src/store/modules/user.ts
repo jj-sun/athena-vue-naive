@@ -1,13 +1,11 @@
-import { getToken, setToken } from '@/utils/cookies'
-import { Module } from 'vuex'
-import { IRootState, IUserState } from '../interface'
+import { getToken, setToken } from '@/utils/cookies';
+import { UserState } from '../interface'
 import { login, logout, queryPermissionsByUser } from "@/api/login"
 import router from "@/router"
 import { USER_NAME, USER_INFO } from '@/store/mutation-types'
 
-const userModule: Module<IUserState, IRootState> = {
-  namespaced: true,
-  state: {
+export const useUserStore = defineStore ('user', {
+  state: (): UserState => ({
     token: getToken(),
     username: '',
     realname: '',
@@ -15,42 +13,32 @@ const userModule: Module<IUserState, IRootState> = {
     info: {},
     permissionList: [],
     roles: [],
-  },
-  mutations: {
-    SET_TOKEN: (state, token) => {
-      state.token = token
-    },
-    SET_NAME: (state, { username, realname }) => {
-      state.username = username
-      state.realname = realname
-    },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar
-    },
-    SET_PERMISSIONLIST: (state, permissionList) => {
-      state.permissionList = permissionList
-    },
-    SET_INFO: (state, info) => {
-      state.info = info
-    },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
-    },
+  }),
+  getters: {
+    userInfo(state: UserState): UserState {
+      return { ...state }
+    }
   },
   actions: {
-    login({ commit }, userInfo) {
+    setInfo(partial: Partial<UserState>) {
+      this.$patch(partial)
+    },
+    login(userInfo: any) {
+      console.log(userInfo)
       const { username, password } = userInfo
       return new Promise((resolve, reject) => {
         login({ username, password })
           .then((res: any) => {
             let result: any = res.result
-            commit('SET_TOKEN', result.token)
-            commit('SET_INFO', result.userInfo)
-            commit('SET_NAME', {
+           
+            this.setInfo({
+              token: result.token,
+              info: result.info,
               username: result.userInfo.username,
-              realname: result.userInfo.realname
+              realname: result.userInfo.realname,
+              avatar: result.userInfo.avatar
             })
-            commit('SET_AVATAR', result.userInfo.avatar)
+
             setToken(result.token)
             localStorage.setItem(USER_NAME, result.userInfo.username)
             localStorage.setItem(USER_INFO, JSON.stringify(result.userInfo))
@@ -61,9 +49,7 @@ const userModule: Module<IUserState, IRootState> = {
           })
       })
     },
-    GetPermissionList({
-                        commit
-                      }) {
+    GetPermissionList() {
       return new Promise((resolve, reject) => {
         queryPermissionsByUser().then((response: any) => {
           const menuData = response.result.menuTree;
@@ -86,7 +72,8 @@ const userModule: Module<IUserState, IRootState> = {
             })*/
             //console.log(" menu show json ", menuData)
             //update--end--autor:qinfeng-----date:20200109------for：JEECG-63 一级菜单的子菜单全部是隐藏路由，则一级菜单不显示------
-            commit('SET_PERMISSIONLIST', menuData)
+            
+            this.permissionList = menuData
           } else {
             reject('getPermissionList: permissions must be a non-null array !')
           }
@@ -96,17 +83,18 @@ const userModule: Module<IUserState, IRootState> = {
         })
       })
     },
-    logout({ commit, state }) {
+    logout() {
       return new Promise((resolve => {
-        let logoutToken: any = state.token
-        commit('SET_TOKEN', '')
-        commit('SET_INFO', {})
-        commit('SET_NAME', {
+        let logoutToken: any = this.token
+        
+        this.setInfo({
+          token: '',
+          info: {},
           username: '',
-          realname: ''
+          realname: '',
+          avatar: '',
+          permissionList: []
         })
-        commit('SET_AVATAR', '')
-        commit('SET_PERMISSIONLIST', [])
 
         setToken('')
         localStorage.removeItem(USER_NAME)
@@ -119,6 +107,4 @@ const userModule: Module<IUserState, IRootState> = {
       }))
     }
   },
-}
-
-export default userModule
+})

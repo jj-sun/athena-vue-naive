@@ -1,32 +1,5 @@
 /// <reference types="vite/client" />
 
-import { DialogApi, LoadingBarApi, MessageApi, NotificationApi } from 'naive-ui'
-
-declare global {
-  interface Window {
-    $message: MessageApi
-    $dialog: DialogApi
-    $loadingBar: LoadingBarApi
-    $notification: NotificationApi,
-    _CONFIG: any
-  }
-  interface Result<T> {
-    code: number,
-    message: string,
-    success: boolean,
-    result: T,
-    timestamp: number
-  }
-  interface BaseModel {
-    id: string,
-    creator: string,
-    ctime: string,
-    delFlag: number,
-    editor: string,
-    mtime: string,
-  }
-}
-
 export interface ISettings {
   /** 主题颜色 */
   // 主题颜色

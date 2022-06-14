@@ -14,7 +14,7 @@ interface DataItem extends BaseModel {
     children: Array<DataItem>
 }
 
-const createColumns = ( { edit, handleDelete } ): Array<DataTableColumn<DataItem>> => {
+const createColumns = ( { edit, handleDelete }:{ edit: (id:string) => void, handleDelete: (id:string) => void } ): Array<DataTableColumn<DataItem>> => {
     return [
         {
             type: 'selection',

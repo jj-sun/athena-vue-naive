@@ -2,7 +2,7 @@ import { computed, defineComponent, PropType, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NMenu } from 'naive-ui'
 import { useRoutesMenu } from './use-routes-menu'
-import { useStore } from '@/store'
+import { useUserStore } from '@/store'
 import { isExternal } from '@/utils/validate'
 import {IBaseTree} from "@/store/interface";
 import { MenuOption } from 'naive-ui'
@@ -26,7 +26,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute()
     const router = useRouter()
-    const store = useStore()
+    const store = useUserStore()
 
     // 高亮菜单
     const activeKey = ref(route.meta.key)
@@ -36,7 +36,7 @@ export default defineComponent({
       () => activeKey.value = route.meta.key
     )
     // 路由表
-    const routes = computed(() => store.getters.permissionList)
+    const routes = computed(() => store.permissionList)
     //console.log(routes)
     // 菜单
     const menuOptions = useRoutesMenu(toRaw(routes.value))

@@ -2,11 +2,14 @@ import { defineComponent, onMounted, reactive, ref } from "vue";
 import { NSpin, NForm, NInput, NGrid, NFormItemGi, FormValidationError,NRadioGroup, NRadio,NSpace, NSwitch, NInputNumber, NTreeSelect } from "naive-ui";
 import { getAction, httpAction } from "@/api/manage";
 import { Method } from '@/utils/request';
+import useSystem from "@/hooks/useSystem";
 
 export default defineComponent({
     name: 'DeptForm',
     emits: ['ok'],
     setup(props, { emit,expose }) {
+
+        const { loadDeptTree } = useSystem()
 
         const confirmLoading = ref(false)
 
@@ -78,16 +81,8 @@ export default defineComponent({
             })
         }
 
-        const loadTree = () => {
-            // @ts-ignore
-            getAction('/sys/dept/select').then((res: Result<any>) => {
-                if(res.success) {
-                    treeSelectOptions.value = res.result || []
-                }
-            })
-        }
         onMounted(() => {
-            loadTree()
+            loadDeptTree(treeSelectOptions)
         })
 
         expose({

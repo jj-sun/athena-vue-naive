@@ -1,6 +1,6 @@
 import { h, defineComponent, reactive, ref, Ref, onMounted, CSSProperties } from "vue";
 import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, DataTableColumn, NBadge } from "naive-ui";
-import { getAction } from "@/api/manage";
+import useBaseList from "@/hooks/useBaseList";
 
 interface DataItem {
     id: string,
@@ -73,76 +73,17 @@ export default defineComponent({
             pageSize: 10
         })
 
-        const loading = ref(false)
-        const pagination = reactive({
-            page: 1,
-            pageCount: 1,
-            pageSize: 10,
-            itemCount: 0,
-            showSizePicker: true,
-            pageSizes: [10, 20, 30, 40],
-            prefix: ({ itemCount }) => {
-                return `共${itemCount}条`
-            },
-            onUpdatePage: (page: number) => {
-                pagination.page = page
-                loadData(0)
-            },
-            onUpdatePageSize: (pageSize: number) => {
-                pagination.pageSize = pageSize
-                pagination.page = 1
-                searchQuery()
-            }
-        })
-        const data: Ref<DataItem[]> = ref([])
-
-
-        const tableOperator: CSSProperties = {
-            marginBottom: '8px'
-        }
-
-        const rowKey = (rowData: DataItem): string => {
-            return rowData.id
-        }
-
-        const getSearchQuery = () => {
-            let params = Object.assign({}, search)
-            params.page = pagination.page
-            params.pageSize = pagination.pageSize
-            return params
-        }
-
-        const loadData = (args: number) => {
-            loading.value = true
-            if (args === 1) {
-                pagination.page = 1
-            }
-            let params = getSearchQuery()
-            // @ts-ignore
-            getAction(url.list, params).then((r: Result<any>) => {
-                if (r.success) {
-                    data.value = r.result.list
-                    pagination.itemCount = r.result.totalCount
-                    pagination.pageCount = r.result.totalPage
-                } else {
-                    window.$message.error(r.message)
-                }
-                loading.value = false
-
-            })
-        }
-
-        const reload = () => {
-            loadData(1)
-        }
-
-        const searchQuery = () => {
-            loadData(1)
-        }
         const searchReset = () => {
             search.operation = ''
             loadData(1)
         }
+        const { 
+            loading,
+            pagination,
+            data,
+            rowKey,
+            loadData,
+            searchQuery} = useBaseList(url, search)
 
         onMounted(() => {
             loadData(1)
@@ -161,11 +102,6 @@ export default defineComponent({
                                             <NInput v-model:value={search.operation} placeholder='输入日志关键字' />
                                         </NFormItem>
                                     </NGi>
-                                    {/* <NGi>
-                                        <NFormItem label="姓名">
-                                            <NInput v-model:value={search.realname} placeholder='输入姓名' />
-                                        </NFormItem>
-                                    </NGi> */}
                                     <NGi>
                                         <NSpace>
                                             <NButton type='primary' onClick={searchQuery}>查询</NButton>

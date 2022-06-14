@@ -1,6 +1,6 @@
 import Hamburger from '@/components/Hamburger'
 import GitAddress from '@/components/GitAddress'
-import { useStore } from '@/store'
+import { useAppStore } from '@/store'
 import { computed, CSSProperties, defineComponent, Ref, ref, watch } from 'vue'
 import Screenfull from '@/components/Screenfull'
 import DropProfile from '@/components/DropProfile'
@@ -19,15 +19,15 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const store = useStore()
+    const appStore = useAppStore()
 
     // computed
     const { menuMode, tagsView } = useSettings()
-    const collapsed = computed(() => store.getters.collapsed)
+    const collapsed = computed(() => appStore.collapsed)
 
     // methods
     const toggleCollapsed = () => {
-      store.dispatch('app/toggleCollapsed')
+      appStore.toggleCollapsed()
     }
 
     const headerStyle: Ref<CSSProperties> = ref({})

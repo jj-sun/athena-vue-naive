@@ -1,4 +1,4 @@
-import { useStore } from '@/store'
+import { usePermissionStore,useTagsViewStore } from '@/store'
 import { computed, ComputedRef, nextTick, onMounted, ref, Ref, toRaw, watch } from 'vue'
 import { RouteLocationNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router'
 import { useFilterAffixTags } from './use-filter-affix-tags'
@@ -6,7 +6,8 @@ import { useFilterAffixTags } from './use-filter-affix-tags'
 export function useInitView(selectedTag: any) {
   const route = useRoute()
   const router = useRouter()
-  const store = useStore()
+  const permissionStore = usePermissionStore()
+  const tagesViewStore = useTagsViewStore()
 
   // 固定的tag
   const affixTags: Ref<RouteRecordRaw[]> = ref([])
@@ -14,11 +15,11 @@ export function useInitView(selectedTag: any) {
   /** computed */
   // 访问过的路由
   const visitedViews: ComputedRef<RouteLocationNormalized[]> = computed(
-    () => store.getters.visitedViews,
+    () => tagesViewStore.visitedViews,
   )
 
   // routes
-  const routes = computed(() => store.getters.routes)
+  const routes = computed(() => permissionStore.routes)
 
   // watch
   watch(
@@ -34,14 +35,14 @@ export function useInitView(selectedTag: any) {
     affixTags.value = useFilterAffixTags(toRaw(routes.value))
     for (const tag of affixTags.value) {
       if (tag.name) {
-        store.dispatch('tagsView/addVisitedView', tag)
+        tagesViewStore.addVisitedView(tag)
       }
     }
   }
   // 添加访问的tag
   const addTags = () => {
     if (route.name) {
-      store.dispatch('tagsView/addView', route)
+      tagesViewStore.addView(route)
     }
     return false
   }
@@ -52,7 +53,7 @@ export function useInitView(selectedTag: any) {
       for (const tag of selectedTag) {
         if (tag.to.path === route.path) {
           if (tag.to.fullPath !== route.fullPath) {
-            store.dispatch('tagsView/updateVisitedView', route)
+            tagesViewStore.updateVisitedView(route)
           }
           break
         }
@@ -85,9 +86,10 @@ export function useInitView(selectedTag: any) {
   return {
     route,
     router,
-    store,
     affixTags,
     visitedViews,
+    tagesViewStore,
+    permissionStore,
     addTags,
     toLastViews,
     isActive,

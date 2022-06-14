@@ -2,12 +2,14 @@ import { NForm, NFormItem, NInput, FormRules, NRow, NCol, NButton } from 'naive-
 import { CSSProperties, defineComponent, reactive, toRefs, withModifiers } from 'vue'
 import logoBg from '@/assets/images/login-background.jpg'
 import { useRouter } from 'vue-router'
-import store from "@/store";
+import { useUserStore } from "@/store";
 
 export default defineComponent({
   name: 'Login',
   setup() {
     const router = useRouter()
+
+    const userStore = useUserStore()
 
     const state = reactive({
       formRef: null,
@@ -54,7 +56,8 @@ export default defineComponent({
 
     // methods
     const submitLogin = () => {
-      store.dispatch('user/login', state.loginModel).then((res: any) => {
+      // @ts-ignore
+      userStore.login(state.loginModel).then((res: any) => {
         router.replace('/').catch(reason => {
           console.log('登录失败！')
         })
@@ -98,7 +101,7 @@ export default defineComponent({
 
           {/* 底部 */}
           <div class="el-login-footer" style={footer}>
-            <span>Copyright © 2018-2021 All Rights Reserved.</span>
+            <span>Copyright © 2018-2022 All Rights Reserved.</span>
           </div>
         </div>
       )

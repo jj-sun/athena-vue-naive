@@ -1,5 +1,5 @@
 import axios, {AxiosResponse, Method} from 'axios'
-import store from '@/store'
+import { useUserStore } from '@/store'
 import VueAxios from 'vue-axios'
 import router from '@/router/index'
 import {getToken, removeToken} from "@/utils/cookies"
@@ -12,7 +12,6 @@ import {RouteLocationNormalizedLoaded} from "vue-router";
  * 则映射后端域名，通过 vue.config.js
  * @type {*|string}
  */
-
 //let apiBaseUrl = window._CONFIG['domianURL'] || "/athena";
 let apiBaseUrl = '/athena'
 // 创建 axios 实例
@@ -26,6 +25,7 @@ const err = (error: any) => {
     if (error.response) {
         let data = error.response.data
         const token = getToken()
+        const userStore = useUserStore()
         console.log("------异常响应------", token)
         console.log("------异常响应------", error.response.status)
         switch (error.response.status) {
@@ -53,7 +53,7 @@ const err = (error: any) => {
                             content: '很抱歉，登录已过期，请重新登录',
                             positiveText: '重新登录',
                             onPositiveClick: () => {
-                                store.dispatch('Logout').then(() => {
+                                userStore.logout().then(() => {
                                     removeToken()
                                     try {
                                         let path = window.document.location.pathname
@@ -80,7 +80,7 @@ const err = (error: any) => {
             case 401:
                 window.$notification.error({content: '系统提示', meta: '未授权，请重新登录', duration: 4000})
                 if (token) {
-                    store.dispatch('Logout').then(() => {
+                    userStore.logout().then(() => {
                         setTimeout(() => {
                             window.location.reload()
                         }, 1500)
@@ -151,6 +151,7 @@ const installer = {
 function blobToJson(data: any) {
     let fileReader = new FileReader();
     let token = getToken()
+    const userStore = useUserStore()
     fileReader.onload = function () {
         try {
             let jsonData = JSON.parse(data);  // 说明是普通对象数据，后台转换失败
@@ -161,7 +162,7 @@ function blobToJson(data: any) {
                         content: '很抱歉，登录已过期，请重新登录',
                         positiveText: '重新登录',
                         onPositiveClick: () => {
-                            store.dispatch('Logout').then(() => {
+                            userStore.logout().then(() => {
                                 removeToken()
                                 window.location.reload()
                             })

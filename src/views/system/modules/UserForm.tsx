@@ -3,17 +3,19 @@ import { NSpin, NForm, NInput, NGrid, NFormItemGi, FormValidationError,NRadioGro
 import { getAction, httpAction } from "@/api/manage";
 import { Method } from '@/utils/request';
 import { SelectMixedOption } from "naive-ui/lib/select/src/interface";
+import useSystem from "@/hooks/useSystem";
 
 export default defineComponent({
     name: 'UserForm',
     emits: ['ok'],
     setup(props, { emit,expose }) {
 
+        const { loadRoleSelect, loadDeptTree } = useSystem()
+
         const url = reactive({
             save: '/sys/user/save',
             update: '/sys/user/update',
-            info: '/sys/user/info/',
-            roleSelect: '/sys/role/select'
+            info: '/sys/user/info/'
         })
 
         const confirmLoading = ref(false)
@@ -93,26 +95,10 @@ export default defineComponent({
             })
         }
 
-        const getRoleSelect = () => {
-            // @ts-ignore
-            getAction(url.roleSelect).then((res: Result<any>) => {
-                if(res.success) {
-                    roleSelectOptions.value = res.result
-                }
-            })
-        }
-        const loadTree = () => {
-            // @ts-ignore
-            getAction('/sys/dept/select').then((res: Result<any>) => {
-                if(res.success) {
-                    deptTreeOptions.value = res.result || []
-                }
-            })
-        }
 
         onMounted(() => {
-            loadTree()
-            getRoleSelect()
+            loadRoleSelect(roleSelectOptions)
+            loadDeptTree(deptTreeOptions)
         })
 
         expose({

@@ -1,5 +1,5 @@
 import { defineComponent,ref, Ref, nextTick } from "vue";
-import { NCard, NModal, NSpace, NButton } from "naive-ui";
+import { NCard, NModal, NSpace, NButton, NDrawer } from "naive-ui";
 import UserForm from "./UserForm";
 
 export default defineComponent({
@@ -32,6 +32,10 @@ export default defineComponent({
         const handleOk = () => {
             realForm.value.submitForm()
         }
+
+        const updateVisible = (show: boolean) => {
+            visible.value = show
+        }
         
         expose({
             add,
@@ -41,7 +45,7 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <NModal show={ visible.value }>
+                    <NDrawer show={ visible.value } placement="right" width="600px" onUpdate:show={ updateVisible }>
                         <NCard style={ 'width: 600px' }
                                 title={ title.value }
                                 bordered={ false } 
@@ -61,7 +65,7 @@ export default defineComponent({
                                 }}
                         </NCard>
                         
-                    </NModal>
+                    </NDrawer>
                 </div>  
             )
         }

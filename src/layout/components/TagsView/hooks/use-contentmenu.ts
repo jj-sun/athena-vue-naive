@@ -11,13 +11,13 @@ export function useContextmenu() {
 
   const message = useMessage()
 
-  const { route, router, store, affixTags, visitedViews, toLastViews, isActive } = useInitView(
+  const { route, router,permissionStore,tagesViewStore,affixTags, visitedViews, toLastViews, isActive } = useInitView(
     selectedTag.value,
   )
-
+  
   // 刷新当前
   const refreshSelectedTag = (view: RouteLocationNormalized) => {
-    store.dispatch('tagsView/delCachedView', view).then(() => {
+    tagesViewStore.delCachedView(view).then(() => {
       nextTick(() => {
         router.replace({
           path: '/redirect' + route.fullPath,
@@ -27,7 +27,8 @@ export function useContextmenu() {
   }
   // 关闭当前
   const closeSelectedTag = (view: RouteLocationNormalized) => {
-    store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
+    // @ts-ignore
+    tagesViewStore.delView(view).then(({ visitedViews }) => {
       if (isActive(view)) {
         toLastViews(visitedViews, view)
       }
@@ -37,14 +38,15 @@ export function useContextmenu() {
   // 关闭其它
   const closeOthersTags = () => {
     router.push(selectedTag.value)
-    store.dispatch('tagsView/delOthersViews', selectedTag.value).then(() => {
+    tagesViewStore.delOthersViews(selectedTag.value).then(() => {
       // moveToCurrentTag()
     })
   }
 
   // 关闭所有
   const closeAllTags = (view: RouteLocationNormalized) => {
-    store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
+    // @ts-ignore
+    tagesViewStore.delAllViews().then(({ visitedViews }) => {
       if (affixTags.value.some(tag => tag.path === view.path)) {
         return
       }

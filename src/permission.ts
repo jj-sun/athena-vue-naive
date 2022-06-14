@@ -1,6 +1,6 @@
 import { useTitle } from '@vueuse/core'
 import router from '@/router'
-import store from '@/store'
+import { useUserStore,usePermissionStore } from '@/store'
 import { getToken } from "@/utils/cookies"
 import { generateIndexRouter } from "@/utils/util";
 import {RouteRecordRaw} from "vue-router";
@@ -11,6 +11,8 @@ const title = useTitle()
 const whiteList = ['/login', '/auth-redirect']
 
 router.beforeEach( (to, from, next) => {
+  const userStore = useUserStore()
+  const permissionStore = usePermissionStore()
   // 开启加载条
   window.$loadingBar.start()
   //console.log(router.getRoutes())
@@ -23,14 +25,15 @@ router.beforeEach( (to, from, next) => {
       })
       window.$loadingBar.finish()
     } else {
-      if(store.getters.permissionList.length === 0) {
-        store.dispatch('user/GetPermissionList').then((res: any) => {
+      if(userStore.permissionList.length === 0) {
+        userStore.GetPermissionList().then((res: any) => {
           const menuData = res.result.menuTree
           if(menuData === null || menuData === undefined) {
             return
           }
           let constRoutes = generateIndexRouter(menuData)
-          store.dispatch('permission/generateRoutes', { constRoutes }).then((data: Array<RouteRecordRaw>) => {
+          // @ts-ignore
+          permissionStore.generateRoutes({ constRoutes }).then((data: Array<RouteRecordRaw>) => {
             data.forEach(item => {
               router.addRoute(item)
             })
@@ -47,7 +50,7 @@ router.beforeEach( (to, from, next) => {
             }
           })
         }).catch((e) => {
-          store.dispatch('Logout').then(() => {
+          userStore.logout().then(() => {
             next({
               path: '/login',
               query: {

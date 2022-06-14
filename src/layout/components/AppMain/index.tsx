@@ -1,14 +1,14 @@
 import { computed, defineComponent, KeepAlive, Transition } from 'vue'
 import { RouteLocationNormalizedLoaded, RouterView, useRoute } from 'vue-router'
-import { useStore } from '@/store'
+import { useTagsViewStore } from '@/store'
 
 export default defineComponent({
   name: 'AppMain',
   setup() {
-    const store = useStore()
+    const store = useTagsViewStore()
     const route = useRoute()
 
-    const cachedViews = computed(() => store.getters.cachedViews)
+    const cachedViews = computed(() => store.cachedViews)
     const key = computed(() => route.path)
     // console.log(key.value)
 
