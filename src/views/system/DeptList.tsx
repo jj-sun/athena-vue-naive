@@ -35,12 +35,17 @@ const createColumns = ( { edit, handleDelete }:{ edit: (id:string) => void, hand
             key: 'action',
             fixed: 'right',
             render(rowData: DataItem) {
-                return [h('a', { onClick: () => edit(rowData.id), style: {
-                        color: '#18a058'
-                    } }, { default: () => '编辑' } ),
-                    h(NDivider, { vertical: true }),
-                    h(NPopconfirm,{ onPositiveClick: () => handleDelete(rowData.id) }, { default: () => '确定删除?', trigger: () => h('a', { style:{ color: '#18a058' } }, '删除')})
-                    ]
+                return (
+                    <NSpace>
+                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
+                            {{
+                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                default: () => '确定删除?'
+                            }}
+                        </NPopconfirm>
+                    </NSpace>
+                )
             }
         }
     ]
@@ -48,20 +53,20 @@ const createColumns = ( { edit, handleDelete }:{ edit: (id:string) => void, hand
 
 export default defineComponent({
     name: 'DeptList',
-    setup() {
+    setup: function () {
         const url = reactive({
             list: '/sys/dept/list',
             delete: '/sys/dept/delete',
             deleteBatch: '/sys/dept/deleteBatch',
         })
-        const  search = reactive({
+        const search = reactive({
             deptName: '',
             delFlag: null
         })
         const checkedRowKeysRef: Ref<Array<RowKey>> = ref([])
 
         const loading = ref(false)
-       
+
         const data: Ref<DataItem[]> = ref([])
 
         const modalForm = ref()
@@ -76,17 +81,17 @@ export default defineComponent({
 
         const getSearchQuery = () => {
             let params = Object.assign({}, search)
-           
+
             return params
         }
 
         const loadData = () => {
             loading.value = true
-            
+
             let params = getSearchQuery()
             // @ts-ignore
             getAction(url.list, params).then((r: Result<any>) => {
-                if(r.success) {
+                if (r.success) {
                     data.value = r.result
                 } else {
                     window.$message.error(r.message)
@@ -105,8 +110,8 @@ export default defineComponent({
         }
         const handleDelete = (id: string) => {
             // @ts-ignore
-            deleteAction(url.delete, { id: id }).then((r: Result<any>) => {
-                if(r.success) {
+            deleteAction(url.delete, {id: id}).then((r: Result<any>) => {
+                if (r.success) {
                     window.$message.success(r.message)
                     reload()
                 } else {
@@ -115,24 +120,24 @@ export default defineComponent({
             })
         }
         const handleBatchDelete = () => {
-          
-          if(checkedRowKeysRef.value.length > 0) {
-            let ids = checkedRowKeysRef.value.join()
-            // @ts-ignore
-            deleteAction(url.deleteBatch, { ids: ids }).then((r: Result<any>) => {
-                if(r.success) {
-                    window.$message.success(r.message)
-                    reload()
-                    clearSelected()
-                } else {
-                    window.$message.error(r.message)
-                }
-            })
-          }
-        
+
+            if (checkedRowKeysRef.value.length > 0) {
+                let ids = checkedRowKeysRef.value.join()
+                // @ts-ignore
+                deleteAction(url.deleteBatch, {ids: ids}).then((r: Result<any>) => {
+                    if (r.success) {
+                        window.$message.success(r.message)
+                        reload()
+                        clearSelected()
+                    } else {
+                        window.$message.error(r.message)
+                    }
+                })
+            }
+
         }
         const handleCheck = (rowKeys: Array<RowKey>) => {
-            checkedRowKeysRef.value =  rowKeys
+            checkedRowKeysRef.value = rowKeys
         }
         const clearSelected = () => {
             checkedRowKeysRef.value.length = 0
@@ -162,12 +167,12 @@ export default defineComponent({
             return (
                 <div>
                     <NCard>
-                    <div>
+                        <div>
                             <NForm inline labelPlacement={'left'} labelWidth={60}>
                                 <NGrid xGap={12} cols={4}>
                                     <NGi>
-                                        <NFormItem label="部门名称" >
-                                            <NInput  v-model:value={ search.deptName } placeholder='输入部门名称'/>
+                                        <NFormItem label="部门名称">
+                                            <NInput v-model:value={search.deptName} placeholder='输入部门名称'/>
                                         </NFormItem>
                                     </NGi>
                                     {/* <NGi>
@@ -177,16 +182,16 @@ export default defineComponent({
                                     </NGi> */}
                                     <NGi>
                                         <NSpace>
-                                            <NButton type='primary' onClick={ searchQuery }>查询</NButton>
-                                            <NButton type='default' onClick={ searchReset }>重置</NButton>
+                                            <NButton type='primary' onClick={searchQuery}>查询</NButton>
+                                            <NButton type='default' onClick={searchReset}>重置</NButton>
                                         </NSpace>
                                     </NGi>
                                 </NGrid>
                             </NForm>
                         </div>
-                        <div style={ tableOperator }>
+                        <div style={tableOperator}>
                             <NSpace>
-                                <NButton type='primary' onClick={ handleAdd }>
+                                <NButton type='primary' onClick={handleAdd}>
                                     {{
                                         default: () => '新增',
                                         icon: () => (
@@ -196,24 +201,26 @@ export default defineComponent({
                                         )
                                     }}
                                 </NButton>
-                                <NPopconfirm onPositiveClick={ handleBatchDelete }>
+                                <NPopconfirm onPositiveClick={handleBatchDelete}>
                                     {{
                                         default: () => '确认删除？',
-                                        trigger: () => <NButton v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
+                                        trigger: () => <NButton type="error"
+                                            v-show={checkedRowKeysRef.value.length > 0}>批量删除</NButton>
                                     }}
 
                                 </NPopconfirm>
                             </NSpace>
                         </div>
                         <div>
-                            <NAlert type='info' showIcon={ false } style="margin-bottom: 16px">
+                            <NAlert type='info' showIcon={false} style="margin-bottom: 16px">
                                 <i></i> 已选择
-                                <a style="font-weight: 600">{ checkedRowKeysRef.value.length }</a>项
-                                <a style={ "margin-left: 24px;color: #18a058" } onClick={ clearSelected }>清空</a>
+                                <a style="font-weight: 600">{checkedRowKeysRef.value.length}</a>项
+                                <a style={"margin-left: 24px;color: #18a058"} onClick={clearSelected}>清空</a>
                             </NAlert>
-                            <NDataTable remote loading={ loading.value } columns={ createColumns( { edit,handleDelete }) } data={data.value} rowKey={ rowKey } onUpdateCheckedRowKeys={ handleCheck }/>
+                            <NDataTable remote loading={loading.value} columns={createColumns({edit, handleDelete})}
+                                        data={data.value} rowKey={rowKey} onUpdateCheckedRowKeys={handleCheck}/>
                         </div>
-                        <DeptModal ref={ modalForm } onOk={ modalFormOk } ></DeptModal>
+                        <DeptModal ref={modalForm} onOk={modalFormOk}></DeptModal>
 
                     </NCard>
                 </div>

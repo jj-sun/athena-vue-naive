@@ -1,18 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { constantRoutes } from './routes'
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: constantRoutes,
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
-
-export function resetRouter(): void {
-  router.getRoutes().map(route => {
-    const { name } = route
-    if (name) {
-      router.hasRoute(name) && router.removeRoute(name)
-    }
-  })
-}
-
-export default router

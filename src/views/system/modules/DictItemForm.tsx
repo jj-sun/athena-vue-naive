@@ -8,9 +8,9 @@ export default defineComponent({
     emits: ['ok'],
     setup(props, { emit,expose }) {
 
-        const confirmLoading = ref(false)
+        let confirmLoading = $ref(false)
 
-        const form = ref({
+        let form = $ref({
             id: '',
             dictId: '',
             itemText: '',
@@ -32,31 +32,31 @@ export default defineComponent({
         }
 
         const add = (dictId: string) => {
-            form.value.dictId = dictId
+            form.dictId = dictId
         }
 
         const editForm = (id: string): void => {
             // @ts-ignore
             getAction(`/sys/dictItem/info/${id}`).then((res: Result<any>) => {
                 if(res.success) {
-                    form.value = res.result
+                    form = res.result
                 }
             })
         }
         const submitForm = () => {
             formRef.value.validate((error: Array<FormValidationError>) => {
                 if (!error) {
-                    confirmLoading.value = true
+                    confirmLoading = true
                     let httpurl = '';
                     let method: Method = 'put';
-                    if (!form.value.id) {
+                    if (!form.id) {
                         httpurl = '/sys/dictItem/save';
                         method = 'post';
                     } else {
                         httpurl = '/sys/dictItem/update';
                         method = 'put';
                     }
-                    let formData = Object.assign({}, form.value);
+                    let formData = Object.assign({}, form);
                     console.log("表单提交数据", formData);
                     // @ts-ignore
                     httpAction(httpurl, formData, method).then((res: Result<any>) => {
@@ -67,7 +67,7 @@ export default defineComponent({
                             window.$message.warning(res.message);
                         }
                     }).finally(() => {
-                        confirmLoading.value = false
+                        confirmLoading = false
                     })
                 } 
             })
@@ -81,25 +81,25 @@ export default defineComponent({
 
         return () => {
             return (
-                <NSpin show={confirmLoading.value}>
-                    <NForm model={form.value} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
+                <NSpin show={confirmLoading}>
+                    <NForm model={form} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
                         <NGrid cols={24} x-xGap={24}>
 
                             <NFormItemGi span={24} path="dictName" label="字典名称">
-                                <NInput v-model:value={form.value.itemText} />
+                                <NInput v-model:value={form.itemText} />
                             </NFormItemGi>
                             <NFormItemGi span={24} path="dictCode" label="字典编码">
-                                <NInput v-model:value={form.value.itemValue} />
+                                <NInput v-model:value={form.itemValue} />
                             </NFormItemGi>
 
                             <NFormItemGi span={24} label="描述">
-                                <NInput type="textarea" v-model:value={form.value.description} />
+                                <NInput type="textarea" v-model:value={form.description} />
                             </NFormItemGi>
                             <NFormItemGi span={24} label="排序">
-                                <NInputNumber v-model:value={form.value.sortOrder} />
+                                <NInputNumber v-model:value={form.sortOrder} />
                             </NFormItemGi>
                             <NFormItemGi span={24} label="是否启用">
-                                <NSwitch v-model:value={form.value.delFlag} size="medium" checkedValue={ 0 }>
+                                <NSwitch v-model:value={form.delFlag} size="medium" checkedValue={ 0 }>
                                     {{
                                         checked: () => '开启',
                                         unchecked: () => '关闭'

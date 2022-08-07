@@ -1,14 +1,16 @@
 import type { App } from 'vue'
 import { createPinia } from 'pinia'
+import type { TagView } from './types'
 import { useUserStore } from './modules/user'
-import {  useSettingsStore} from './modules/settings'
-import { useAppStore } from './modules/app'
+import {  useSettingStore} from './modules/setting'
 import { usePermissionStore } from './modules/permission'
 import { useTagsViewStore } from './modules/tagsView'
 
 const store = createPinia()
 
-export { useUserStore,useSettingsStore,useAppStore,usePermissionStore,useTagsViewStore }
+export { useUserStore,useSettingStore,usePermissionStore,useTagsViewStore }
+
+export { TagView }
 
 export function setupStore(app: App<Element>) {
   app.use(store)

@@ -46,16 +46,18 @@ const createColumns = ( { edit,handlePermission, handleDelete } ): Array<DataTab
             key: 'action',
             fixed: 'right',
             render(rowData: DataItem) {
-                return [h('a', { onClick: () => edit(rowData.id), style: {
-                        color: '#18a058'
-                    } }, { default: () => '编辑' } ),
-                    h(NDivider, { vertical: true }),
-                    h('a', { onClick: () => handlePermission(rowData.id), style: {
-                        color: '#18a058'
-                    } }, { default: () => '授权' } ),
-                    h(NDivider, { vertical: true }),
-                    h(NPopconfirm,{ onPositiveClick: () => handleDelete(rowData.id) }, { default: () => '确定删除?', trigger: () => h('a', { style:{ color: '#18a058' } }, '删除')})
-                    ]
+                return (
+                    <NSpace>
+                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NButton text tag='a' type='primary' onClick={ () => handlePermission(rowData.id) }>授权</NButton>
+                        <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
+                            {{
+                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                default: () => '确定删除?'
+                            }}                           
+                        </NPopconfirm>
+                    </NSpace>
+                )
             }
         }
     ]
@@ -153,7 +155,7 @@ export default defineComponent({
                                 <NPopconfirm onPositiveClick={ handleBatchDelete }>
                                     {{
                                         default: () => '确认删除？',
-                                        trigger: () => <NButton v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
+                                        trigger: () => <NButton type="error" v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
                                     }}
 
                                 </NPopconfirm>

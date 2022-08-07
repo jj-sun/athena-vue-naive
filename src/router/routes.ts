@@ -6,7 +6,7 @@ import {
   UsbFilled,
   IeOutlined,
 } from '@vicons/antd'
-import Layout from '@/layout'
+import PageLayout  from '@/layout/PageLayout'
 
 /**
  * 参数解析：
@@ -54,7 +54,7 @@ import Layout from '@/layout'
 export const constantRoutes: Array<RouteRecordRaw> = [
   {
     path: '/redirect',
-    component: Layout,
+    component: PageLayout,
     meta: { hidden: true },
     children: [
       {
@@ -78,7 +78,7 @@ export const constantRoutes: Array<RouteRecordRaw> = [
 export const asyncRoutes: Array<RouteRecordRaw> = [
   {
     path: '/icon',
-    component: Layout,
+    component: PageLayout,
     children: [
       {
         path: 'index',
@@ -90,7 +90,7 @@ export const asyncRoutes: Array<RouteRecordRaw> = [
   },
   {
     path: '/documentation',
-    component: Layout,
+    component: PageLayout,
     children: [
       {
         path: 'index',
@@ -102,7 +102,7 @@ export const asyncRoutes: Array<RouteRecordRaw> = [
   },
   {
     path: '/guide',
-    component: Layout,
+    component: PageLayout,
     redirect: '/guide/index',
     children: [
       {

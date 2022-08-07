@@ -1,14 +1,15 @@
 // 生成首页路由
-import Layout from '@/layout/RouteView'
+import PageLayout from '@/layout/PageLayout'
+import BlankLayout from '@/layout/BlankLayout';
 import InnerLink from '@/layout/components/InnerLink';
-import {RouteRecordRaw} from "vue-router";
+import { RouteRecordRaw } from "vue-router";
 import { isURL } from "@/utils/validate";
 
 export function generateIndexRouter(data: Array<any>) {
     let indexRouter: Array<RouteRecordRaw> = [{
         path: '/',
-        name: 'dashboard',
-        component: () => import('@/layout/index'),
+        name: 'root',
+        component: () => import('@/layout/PageLayout'),
         redirect: '/dashboard/analysis',
         children: [
             ...generateChildRouters(data)
@@ -37,21 +38,23 @@ function  generateChildRouters (data: Array<any>) {
         }
 
         let componentPath: any;
-        if(item.info.component.indexOf("layout/RouterView") >= 0) {
-            componentPath = Layout
-        } else if(item.info.component.indexOf("layout/InnerLink") >= 0) {
+        if(item.info.component.indexOf("layout/PageLayout") >= 0) {
+            componentPath = PageLayout
+        } else if(item.info.component.indexOf("layout/BlankLayout") >= 0) {
+            componentPath = BlankLayout
+        } else if(item.info.component.indexOf("layout/components/InnerLink") >= 0) {
             componentPath = InnerLink
         } else {
-            componentPath = modules[`../views/${item.info.component}`]
+            componentPath = modules[`../views/${item.info.component}.tsx`]
         }
         //console.log(componentPath)
         let menu: RouteRecordRaw =  {
             path: item.info.url,
-            name: item.info.name,
+            name: item.info.id,
             redirect:item.info.redirect,
             component: componentPath,
             meta: {
-                affix: item.info.name == '首页',
+                isAffix: item.info.name == '首页',
                 key: item.key,
                 title:item.info.name ,
                 icon: item.info.icon,

@@ -1,7 +1,7 @@
 import { getToken, setToken } from '@/utils/cookies';
 import { UserState } from '../interface'
 import { login, logout, queryPermissionsByUser } from "@/api/login"
-import router from "@/router"
+import { router } from "@/router"
 import { USER_NAME, USER_INFO } from '@/store/mutation-types'
 
 export const useUserStore = defineStore ('user', {

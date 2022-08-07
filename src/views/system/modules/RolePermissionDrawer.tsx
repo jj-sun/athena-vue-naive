@@ -13,19 +13,19 @@ export default defineComponent({
             checked: '/sys/rolePermission/getPermissionIdList',
             save: '/sys/rolePermission/saveBatch'
         })
-        const roleId = ref('')
-        const treeOptions = ref([])
-        const expandedKeys = ref<Array<string>>()
-        const checkedKeys = ref<Array<string>>()
+        let roleId = $ref('')
+        let treeOptions = $ref([])
+        let expandedKeys = $ref<Array<string>>()
+        let checkedKeys = $ref<Array<string>>()
 
-        const visible = ref(false)
-        const loading = ref(false)
+        let visible = $ref(false)
+        let loading = $ref(false)
 
         const loadData = (id:string) => {
             // @ts-ignore
             getAction(url.treeSelect).then((res: Result<any>) => {
                 if(res.success) {
-                    treeOptions.value = res.result || []
+                    treeOptions = res.result || []
                     getSelected(id)
                 }
             })
@@ -34,35 +34,35 @@ export default defineComponent({
             // @ts-ignore
             getAction(url.checked, { id: id }).then((res: Result<any>) => {
                 if(res.success) {
-                    checkedKeys.value = res.result.length > 0 ? res.result : [firstId]
-                    expandedKeys.value = res.result || []
+                    checkedKeys = res.result.length > 0 ? res.result : [firstId]
+                    expandedKeys = res.result || []
                 }
             })
         }
 
         const changeCheckedKeys = (keys: Array<string>) => {
-            checkedKeys.value = keys
+            checkedKeys = keys
         }
         const changeExpandedKeys = (keys: Array<string>) => {
-            expandedKeys.value = keys
+            expandedKeys = keys
         }
 
         const updateVisible = (show: boolean) => {
-            visible.value = show
+            visible = show
         }
 
         const show = (id:string) => {
-            visible.value = true
-            roleId.value = id
+            visible = true
+            roleId = id
             loadData(id)
         }
         const close = () => {
-            visible.value = false
+            visible = false
         }
         const save = () => {
-            let saveData = toRaw(checkedKeys.value)
+            let saveData = toRaw(checkedKeys)
             console.log(saveData)
-            loading.value = true
+            loading = true
             // @ts-ignore
             postAction(url.save, { roleId: roleId.value, permissionIdList: saveData }).then((res: Result<any>) => {
                 if(res.success) {
@@ -71,7 +71,7 @@ export default defineComponent({
                     window.$message.error(res.message)
                 }
             }).finally(() => {
-                loading.value = false
+                loading = false
                 close()
             })
         }
@@ -83,11 +83,11 @@ export default defineComponent({
 
         return () => {
             return (
-                <NSpin show={ loading.value }>
-                    <NDrawer show={ visible.value }  width='600px' onUpdate:show={ updateVisible }>
+                <NSpin show={ loading }>
+                    <NDrawer show={ visible }  width='600px' onUpdate:show={ updateVisible }>
                         <NDrawerContent title='角色权限配置' closable>
                             {{
-                                default: () => <NTree blockLine checkable data={ treeOptions.value } expandedKeys={ expandedKeys.value } checkedKeys={ checkedKeys.value } onUpdateExpandedKeys={ changeExpandedKeys } onUpdateCheckedKeys={ changeCheckedKeys } />,
+                                default: () => <NTree blockLine checkable data={ treeOptions } expandedKeys={ expandedKeys } checkedKeys={ checkedKeys } onUpdateExpandedKeys={ changeExpandedKeys } onUpdateCheckedKeys={ changeCheckedKeys } />,
                                 footer: () => (
                                     <NSpace>
                                         <NButton onClick={ close }>取消</NButton>

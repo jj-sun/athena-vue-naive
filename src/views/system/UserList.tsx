@@ -1,5 +1,5 @@
-import {h, defineComponent, reactive, onMounted, CSSProperties} from "vue";
-import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, NDivider, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag } from "naive-ui";
+import { defineComponent, reactive, onMounted, CSSProperties} from "vue";
+import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, NDivider, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag,PaginationProps } from "naive-ui";
 import UserModal from './modules/UserModal';
 import { PlusOutlined } from '@vicons/antd'
 import useBaseList from "@/hooks/useBaseList";
@@ -63,19 +63,24 @@ const createColumns = ( { edit,handleDelete }: { edit:(id:string) => void,handle
                 let type = rowData.delFlag === 0 ? 'success' : 'error'
                 let name = rowData.delFlag === 0 ? '正常' : '禁用'
                 //return h(NTag, { type: type, size: 'small' }, { default: () => name })
-                return (<NTag type={type} size='small'>{ name }</NTag>)
+                return (<NTag type={ type } size='small'>{ name }</NTag>)
             }
         }, {
             title: '操作',
             key: 'action',
             fixed: 'right',
             render(rowData: DataItem) {
-                return [h('a', { onClick: () => edit(rowData.id), style: {
-                        color: '#18a058'
-                    } }, { default: () => '编辑' } ),
-                    h(NDivider, { vertical: true }),
-                    h(NPopconfirm,{ onPositiveClick: () => handleDelete(rowData.id) }, { default: () => '确定删除?', trigger: () => h('a', { style:{ color: '#18a058' } }, '删除')})
-                    ]
+                return (
+                    <NSpace>
+                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id)}>
+                            {{
+                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                default: () => '确定删除？'
+                            }}
+                        </NPopconfirm>
+                    </NSpace>
+                )
             }
         }
     ]
@@ -89,7 +94,6 @@ export default defineComponent({
             delete: '/sys/user/delete',
             deleteBatch: '/sys/user/deleteBatch',
         })
-
 
         const search = reactive({
             username: '',
@@ -120,6 +124,7 @@ export default defineComponent({
             clearSelected,
             modalFormOk,
             searchQuery} = useBaseList(url, search)
+        
         
         const tableOperator: CSSProperties = {
             marginBottom: '8px'
@@ -172,7 +177,7 @@ export default defineComponent({
                                 <NPopconfirm onPositiveClick={ handleBatchDelete }>
                                     {{
                                         default: () => '确认删除？',
-                                        trigger: () => <NButton v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
+                                        trigger: () => <NButton type="error" v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
                                     }}
 
                                 </NPopconfirm>
@@ -184,7 +189,7 @@ export default defineComponent({
                                 <a style="font-weight: 600">{ checkedRowKeysRef.value.length }</a>项
                                 <a style={ "margin-left: 24px;color: #18a058" } onClick={ clearSelected }>清空</a>
                             </NAlert>
-                            <NDataTable remote loading={ loading.value } columns={ createColumns( { edit,handleDelete }) } data={data.value} pagination={pagination} rowKey={ rowKey } onUpdateCheckedRowKeys={ handleCheck }/>
+                            <NDataTable remote loading={ loading.value } columns={ createColumns( {edit, handleDelete} ) } data={data.value} pagination={ pagination as PaginationProps } rowKey={ rowKey } onUpdateCheckedRowKeys={ handleCheck }/>
                         </div>
                         <UserModal ref={ modalForm } onOk={ modalFormOk } ></UserModal>
 

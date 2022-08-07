@@ -4,8 +4,8 @@ import { getAction, deleteAction } from "@/api/manage";
 
 export default function useBaseList(url:any,search:any){
 
-    const checkedRowKeysRef: Ref<Array<RowKey>> = ref([])
-    const loading = ref(false)
+    let checkedRowKeysRef = ref<Array<RowKey>>([])
+    let loading = ref(false)
     const pagination = reactive({
         page: 1,
         pageCount: 1,
@@ -26,9 +26,10 @@ export default function useBaseList(url:any,search:any){
             searchQuery()
         }
     })
-    const data: Ref<BaseModel[]> = ref([])
 
-    const modalForm = ref()
+    let data = ref<BaseModel[]>([])
+
+    let modalForm = ref()
 
     const rowKey = (rowData: BaseModel): string => {
         return rowData.id

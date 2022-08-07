@@ -18,9 +18,9 @@ export default defineComponent({
             info: '/sys/user/info/'
         })
 
-        const confirmLoading = ref(false)
+        let confirmLoading = $ref(false)
 
-        const form = ref({
+        let form = $ref({
             id: '',
             username: '',
             realname: '',
@@ -50,8 +50,8 @@ export default defineComponent({
             }]
         }
 
-        const roleSelectOptions = ref(Array<SelectMixedOption>())
-        const deptTreeOptions = ref(Array<TreeSelectOption>())
+        let roleSelectOptions = $ref(Array<SelectMixedOption>())
+        let deptTreeOptions = $ref(Array<TreeSelectOption>())
 
         const add = () => {
             
@@ -61,24 +61,24 @@ export default defineComponent({
             // @ts-ignore
             getAction(`${url.info}${id}`).then((res: Result<any>) => {
                 if(res.success) {
-                    form.value = res.result
+                    form = res.result
                 }
             })
         }
         const submitForm = () => {
             formRef.value.validate((error: Array<FormValidationError>) => {
                 if (!error) {
-                    confirmLoading.value = true
+                    confirmLoading = true
                     let httpurl = '';
                     let method: Method = 'put';
-                    if (!form.value.id) {
+                    if (!form.id) {
                         httpurl = url.save;
                         method = 'post';
                     } else {
                         httpurl = url.update;
                         method = 'put';
                     }
-                    let formData = Object.assign({}, form.value);
+                    let formData = Object.assign({}, form);
                     console.log("表单提交数据", formData);
                     // @ts-ignore
                     httpAction(httpurl, formData, method).then((res: Result<any>) => {
@@ -89,7 +89,7 @@ export default defineComponent({
                             window.$message.warning(res.message);
                         }
                     }).finally(() => {
-                        confirmLoading.value = false
+                        confirmLoading = false
                     })
                 } 
             })
@@ -109,32 +109,32 @@ export default defineComponent({
 
         return () => {
             return (
-                <NSpin show={confirmLoading.value}>
-                    <NForm model={form.value} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={60}>
+                <NSpin show={confirmLoading}>
+                    <NForm model={form} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={60}>
                         <NGrid cols={24} x-xGap={24}>
 
                             <NFormItemGi span={24} path="username" label="用户名">
-                                <NInput v-model:value={form.value.username} />
+                                <NInput v-model:value={form.username} />
                             </NFormItemGi>
                             <NFormItemGi span={24} path="realname" label="姓名">
-                                <NInput v-model:value={form.value.realname} />
+                                <NInput v-model:value={form.realname} />
                             </NFormItemGi>
 
                             <NFormItemGi span={24} path="email" label="邮箱">
-                                <NInput v-model:value={form.value.email} />
+                                <NInput v-model:value={form.email} />
                             </NFormItemGi>
 
                             <NFormItemGi span={24} path="mobile" label="手机号">
-                                <NInput v-model:value={form.value.mobile} />
+                                <NInput v-model:value={form.mobile} />
                             </NFormItemGi>
                             <NFormItemGi span={24} label="部门">
-                                <NTreeSelect v-model:value={ form.value.deptCode } options={ deptTreeOptions.value }/>
+                                <NTreeSelect v-model:value={ form.deptCode } options={ deptTreeOptions }/>
                             </NFormItemGi>
                             <NFormItemGi span={24} label="角色">
-                                <NSelect v-model:value={ form.value.roleIdList } multiple options={ roleSelectOptions.value }/>
+                                <NSelect v-model:value={ form.roleIdList } multiple options={ roleSelectOptions }/>
                             </NFormItemGi>
                             <NFormItemGi span={24} label="状态">
-                                <NRadioGroup v-model:value={form.value.delFlag}>
+                                <NRadioGroup v-model:value={form.delFlag}>
                                     <NSpace>
                                         <NRadio value={ 0 }>正常</NRadio>
                                         <NRadio value={ 1 }>禁用</NRadio>

@@ -1,5 +1,5 @@
 import { useTitle } from '@vueuse/core'
-import router from '@/router'
+import { router } from '@/router'
 import { useUserStore,usePermissionStore } from '@/store'
 import { getToken } from "@/utils/cookies"
 import { generateIndexRouter } from "@/utils/util";
@@ -32,6 +32,7 @@ router.beforeEach( (to, from, next) => {
             return
           }
           let constRoutes = generateIndexRouter(menuData)
+          console.log(constRoutes)
           // @ts-ignore
           permissionStore.generateRoutes({ constRoutes }).then((data: Array<RouteRecordRaw>) => {
             data.forEach(item => {

@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { Component, defineComponent, onMounted, reactive, ref } from "vue";
 import { NSpin, NForm, NInput, NGrid, NFormItemGi, FormValidationError,NRadioGroup, NRadio,NSpace, NSwitch, NInputNumber, NTreeSelect, NIcon, NButton, NInputGroup } from "naive-ui";
 import { getAction, httpAction } from "@/api/manage";
 import { Method } from '@/utils/request';
@@ -11,9 +11,9 @@ export default defineComponent({
     emits: ['ok'],
     setup(props, { emit,expose }) {
 
-        const confirmLoading = ref(false)
+        let confirmLoading = $ref(false)
 
-        const form = ref({
+        let form = $ref({
             id: '',
             parentId: '',
             name: '',
@@ -25,7 +25,8 @@ export default defineComponent({
             hidden: 1,
             orderNum: 0
         })
-        const treeSelectOptions = ref([])
+        let treeSelectOptions = $ref([])
+
         const formRef = ref()
 
         const iconsRef = ref()
@@ -55,31 +56,31 @@ export default defineComponent({
             
         }
         const addSubordinate = (parentId: string) => {
-            form.value.type = 1
-            form.value.parentId = parentId
+            form.type = 1
+            form.parentId = parentId
         }
         const editForm = (id: string): void => {
             // @ts-ignore
             getAction(`/sys/permission/info/${id}`).then((res: Result<any>) => {
                 if(res.success) {
-                    form.value = res.result
+                    form = res.result
                 }
             })
         }
         const submitForm = () => {
             formRef.value.validate((error: Array<FormValidationError>) => {
                 if (!error) {
-                    confirmLoading.value = true
+                    confirmLoading = true
                     let httpurl = '';
                     let method: Method = 'put';
-                    if (!form.value.id) {
+                    if (!form.id) {
                         httpurl = '/sys/permission/save';
                         method = 'post';
                     } else {
                         httpurl = '/sys/permission/update';
                         method = 'put';
                     }
-                    let formData = Object.assign({}, form.value);
+                    let formData = Object.assign({}, form);
                     console.log("表单提交数据", formData);
                     // @ts-ignore
                     httpAction(httpurl, formData, method).then((res: Result<any>) => {
@@ -90,7 +91,7 @@ export default defineComponent({
                             window.$message.warning(res.message);
                         }
                     }).finally(() => {
-                        confirmLoading.value = false
+                        confirmLoading = false
                     })
                 } 
             })
@@ -100,7 +101,7 @@ export default defineComponent({
             // @ts-ignore
             getAction('/sys/permission/select').then((res: Result<any>) => {
                 if(res.success) {
-                    treeSelectOptions.value = res.result
+                    treeSelectOptions = res.result
                 }
             })
         }
@@ -108,7 +109,7 @@ export default defineComponent({
             iconsRef.value.showIcon()
         }
         const handleIconChoose = (icon: string) => {
-            form.value.icon = icon
+            form.icon = icon
         }
         onMounted(() => {
             loadTree()
@@ -123,12 +124,12 @@ export default defineComponent({
 
         return () => {
             return (
-                <NSpin show={confirmLoading.value}>
-                    <NForm model={form.value} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
+                <NSpin show={confirmLoading}>
+                    <NForm model={form} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
                         <NGrid cols={24} x-xGap={24}>
                         <NFormItemGi span={24} path="username" label="类型">
                             
-                                <NRadioGroup v-model:value={form.value.type}>
+                                <NRadioGroup v-model:value={form.type}>
                                     <NSpace>
                                         <NRadio value={ 0 }>目录</NRadio>
                                         <NRadio value={ 1 }>菜单</NRadio>
@@ -136,46 +137,46 @@ export default defineComponent({
                                     </NSpace>
                                 </NRadioGroup>
                             </NFormItemGi>
-                            <NFormItemGi span={24} path="name" label={ form.value.type === 2 ? '按钮/权限' : '菜单名称' }>
-                                <NInput v-model:value={form.value.name} />
+                            <NFormItemGi span={24} path="name" label={ form.type === 2 ? '按钮/权限' : '菜单名称' }>
+                                <NInput v-model:value={form.name} />
                             </NFormItemGi>
                             {
-                                form.value.type !== 0 ?
+                                form.type !== 0 ?
                                 <NFormItemGi span={24} path="parentId" label="上级菜单">
-                                    <NTreeSelect options={ treeSelectOptions.value } v-model:value={ form.value.parentId }/>
+                                    <NTreeSelect options={ treeSelectOptions } v-model:value={ form.parentId }/>
                                 </NFormItemGi>
                                 : <></>
                             }
                             
                             {
-                                form.value.type !== 2 ?
+                                form.type !== 2 ?
                                 <NFormItemGi span={24} path="url" label="菜单路径">
-                                    <NInput v-model:value={form.value.url} />
+                                    <NInput v-model:value={form.url} />
                                 </NFormItemGi> 
                                 : <></>
                             }
                             {
-                                form.value.type !== 2 ?
+                                form.type !== 2 ?
                                 <NFormItemGi span={24} path="component" label="前端组件">
-                                    <NInput v-model:value={form.value.component} />
+                                    <NInput v-model:value={form.component} />
                                 </NFormItemGi>
                                 : <></>
                             }
                             {
-                                form.value.type !== 0 ? 
+                                form.type !== 0 ? 
                                 <NFormItemGi span={24} label="授权标识">
-                                    <NInput v-model:value={form.value.perms} />
+                                    <NInput v-model:value={form.perms} />
                                 </NFormItemGi>
                                 : <></>
                             }
                             
                             {
-                                form.value.type !== 2 ?
+                                form.type !== 2 ?
                                 <NFormItemGi span={24} label="菜单图标">
                                     <NInputGroup>
-                                        <NInput disabled style={ 'width: 90%' } v-model:value={form.value.icon} placeholder='请选择图标'>
+                                        <NInput disabled style={ 'width: 90%' } v-model:value={form.icon} placeholder='请选择图标'>
                                             {{
-                                                prefix: () => <NIcon component={ antd[form.value.icon] }/>
+                                                prefix: () => <NIcon component={ antd[form.icon] }/>
                                             }}
                                         </NInput>
                                         <NButton type="default" onClick={ chooseIcon }>
@@ -189,10 +190,10 @@ export default defineComponent({
                             }
                             
                             <NFormItemGi span={24} label="排序">
-                                <NInputNumber v-model:value={form.value.orderNum} />
+                                <NInputNumber v-model:value={form.orderNum} />
                             </NFormItemGi>
                             <NFormItemGi span={24} label="隐藏路由">
-                                <NSwitch v-model:value={form.value.hidden}/>
+                                <NSwitch v-model:value={form.hidden}/>
                             </NFormItemGi>
                         </NGrid>
                     </NForm>

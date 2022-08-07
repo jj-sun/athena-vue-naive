@@ -1,7 +1,7 @@
 import axios, {AxiosResponse, Method} from 'axios'
 import { useUserStore } from '@/store'
 import VueAxios from 'vue-axios'
-import router from '@/router/index'
+import { router } from '@/router/index'
 import {getToken, removeToken} from "@/utils/cookies"
 import {Ref} from "vue";
 import {RouteLocationNormalizedLoaded} from "vue-router";

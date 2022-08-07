@@ -1,6 +1,6 @@
-import {h, defineComponent, reactive, ref,Ref, onMounted, CSSProperties} from "vue";
-import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, NDivider, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag } from "naive-ui";
-import { getAction, deleteAction } from "@/api/manage";
+import {h, defineComponent, reactive, onMounted, CSSProperties} from "vue";
+import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, NPopconfirm, NAlert, DataTableColumn, NIcon, NTag } from "naive-ui";
+import { getAction } from "@/api/manage";
 import ScheduleModal from './modules/ScheduleModal';
 import { PlusOutlined } from '@vicons/antd'
 import useBaseList from "@/hooks/useBaseList";
@@ -53,21 +53,38 @@ export default defineComponent({
                     key: 'action',
                     fixed: 'right',
                     render(rowData: DataItem) {
-                        return [
-                            h('a', { onClick: () => edit(rowData.id), style: {
-                                color: '#18a058'
-                            } }, { default: () => '编辑' } ),
-                            h(NDivider, { vertical: true }),
-                            h(NPopconfirm,{ onPositiveClick: () => handleSchduleJob(url.pause,rowData.id) }, { default: () => '确定暂停?', trigger: () => h('a', { style:{ color: '#18a058' } }, '暂停')}),
-                            h(NDivider, { vertical: true }),
-                            h(NPopconfirm,{ onPositiveClick: () => handleSchduleJob(url.resume,rowData.id) }, { default: () => '确定恢复?', trigger: () => h('a', { style:{ color: '#18a058' } }, '恢复')}),
-                            h(NDivider, { vertical: true }),
-                            h(NPopconfirm,{ onPositiveClick: () => handleSchduleJob(url.run,rowData.id) }, { default: () => '确定立即执行?', trigger: () => h('a', { style:{ color: '#18a058' } }, '立即执行')}),
-                            h(NDivider, { vertical: true }),
-                            h(NPopconfirm,{ onPositiveClick: () => handleDelete(rowData.id) }, { default: () => '确定删除?', trigger: () => h('a', { style:{ color: '#18a058' } }, '删除')})
-                        
-                        ]
-                    }
+                        return (
+                            <NSpace>
+                                <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                                <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
+                                    {{
+                                        trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                        default: () => '确定删除?'
+                                    }}
+                                </NPopconfirm>
+                                <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.pause,rowData.id) }>
+                                    {{
+                                        trigger: () => (<NButton text tag='a' type='primary'>暂停</NButton>),
+                                        default: () => '确定暂停?'
+                                    }}
+                                </NPopconfirm>
+                                <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.resume,rowData.id) }>
+                                    {{
+                                        trigger: () => (<NButton text tag='a' type='primary'>恢复</NButton>),
+                                        default: () => '确定恢复?'
+                                    }}
+                                    
+                                </NPopconfirm>
+                                <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.run,rowData.id) }>
+                                    {{
+                                        trigger: () => (<NButton text tag='a' type='primary'>立即执行</NButton>),
+                                        default: () => '确定立即执行?'
+                                    }}
+                                    
+                                </NPopconfirm>
+                            </NSpace>
+                        )
+                     }
                 }
             ]
         }
@@ -169,7 +186,7 @@ export default defineComponent({
                                 <NPopconfirm onPositiveClick={ handleBatchDelete }>
                                     {{
                                         default: () => '确认删除？',
-                                        trigger: () => <NButton v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
+                                        trigger: () => <NButton type="error" v-show={ checkedRowKeysRef.value.length > 0 }>批量删除</NButton>
                                     }}
 
                                 </NPopconfirm>

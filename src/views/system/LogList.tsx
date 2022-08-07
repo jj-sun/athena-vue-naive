@@ -1,5 +1,5 @@
 import { h, defineComponent, reactive, ref, Ref, onMounted, CSSProperties } from "vue";
-import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, DataTableColumn, NBadge } from "naive-ui";
+import { NCard, NDataTable, NForm, NFormItem, NInput, NGrid, NGi, NButton, NSpace, DataTableColumn, NBadge, NCode } from "naive-ui";
 import useBaseList from "@/hooks/useBaseList";
 
 interface DataItem {
@@ -83,7 +83,7 @@ export default defineComponent({
             data,
             rowKey,
             loadData,
-            searchQuery} = useBaseList(url, search)
+            searchQuery } = useBaseList(url, search)
 
         onMounted(() => {
             loadData(1)

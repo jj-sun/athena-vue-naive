@@ -1,56 +1,71 @@
-import { defineComponent, withModifiers } from 'vue'
-import { RouterLink } from 'vue-router'
-import { NDropdown, NElement, NSpace, NTag } from 'naive-ui'
-import { useContextmenu } from './hooks/use-contentmenu'
+import { useTagsViewStore } from '@/store'
+import { NDropdown, NSpace, NTag } from 'naive-ui'
+import useDropdown from './useDropdown'
+import useTagsView from './useTagsView'
 
-export default defineComponent({
+const TagsView = defineComponent({
   name: 'TagsView',
   setup() {
-    // tagsView
-    // const { affixTags, isActive, visitedViews, toLastViews, handleClose } = useTagsView()
+    const route = useRoute()
+    // const tagsViewStore = useTagsViewStore()
+    // const { visitedViews, cachedViews } = $(storeToRefs(tagsViewStore))
+    const { handleClickTag, handleClose, visitedList } = $(useTagsView())
 
-    // 右键菜单
     const {
-      isActive,
-      visitedViews,
-      closeSelectedTag,
-      handleContextMenu,
+      showDropRef,
+      x,
+      y,
       handleSelect,
-      onClickoutside,
-      options,
-      xRef,
-      yRef,
-      showDropdownRef,
-    } = useContextmenu()
-    // class={isActive(tag) ? 'active' : 'noactive'} 
+      handleContextMenu,
+      clickoutSide,
+      dropOptions
+    } = $(useDropdown(toRaw(visitedList)))
+
     return () => (
-      <NElement style={{ borderColor: 'var(--border-color)' }}>
-        <NSpace style={{ maxHeight: '34px', marginLeft: '16px' }}>
-          {visitedViews.value.map(tag => (
-            <div
-              onContextmenu={e => handleContextMenu(tag, e)}
-              style={{ borderColor: 'rgb(42, 148, 125)' }}>
-              <NTag
-                type={ isActive(tag) ? 'success' : 'default' }
-                key={tag.path}
-                closable={!tag.meta.affix}
-                onClose={withModifiers(() => closeSelectedTag(tag), ['prevent', 'stop'])}>
-                {/* <RouterLink to={{ path: tag.path, query: tag.query }}>{tag.meta?.title}</RouterLink> */}
-                <RouterLink to={{ path: tag.path, query: tag.query }}>{tag.meta?.title}</RouterLink>
-              </NTag>
-            </div>
-          ))}
-          <NDropdown
-            placement="bottom-start"
-            onSelect={handleSelect}
-            trigger="manual"
-            x={xRef.value}
-            y={yRef.value}
-            options={options}
-            show={showDropdownRef.value}
-            onClickoutside={onClickoutside}></NDropdown>
-        </NSpace>
-      </NElement>
+      <NSpace
+        size={'small'}
+        align="center"
+        style={{ height: '34px', margin: '0 5px' }}
+      >
+        {visitedList.map((i) => (
+          <NTag
+            key={i.fullPath}
+            bordered={false}
+            closable={!i?.isAffix}
+            onClose={() => handleClose(i)}
+            color={
+              i.fullPath === route.fullPath
+                ? {
+                    color: 'var(--n-color-checked)',
+                    textColor: 'var(--n-text-color-checked)'
+                  }
+                : {}
+            }
+            style={{ cursor: 'pointer' }}
+          >
+            <span
+              onClick={() => handleClickTag(i)}
+              onContextmenu={(...args) => handleContextMenu(...args, i)}
+            >
+              {i.title}
+            </span>
+          </NTag>
+        ))}
+
+        <NDropdown
+          placement={'bottom-start'}
+          showArrow
+          trigger={'manual'}
+          x={x}
+          y={y}
+          options={dropOptions as any}
+          show={showDropRef}
+          onClickoutside={clickoutSide}
+          onSelect={handleSelect}
+        />
+      </NSpace>
     )
-  },
+  }
 })
+
+export default TagsView

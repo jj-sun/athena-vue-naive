@@ -1,5 +1,5 @@
 import { NCard, NModal,NSpace,NButton, NIcon } from "naive-ui";
-import { defineComponent,ref } from "vue";
+import { Component, defineComponent } from "vue";
 import * as antd from '@vicons/antd'
 import { NScrollbar } from "naive-ui/lib/_internal";
 
@@ -7,19 +7,20 @@ export default defineComponent({
     name: 'icons',
     emits: ['ok'],
     setup(props,{ emit,expose }) {
-        const visible = ref(false)
 
-        const selectedIcon = ref()
+        let visible: boolean = $ref(false)
+
+        let selectedIcon: string = $ref()
 
         const showIcon = () => {
-            visible.value = true
+            visible = true
         }
         const close = () => {
-            visible.value = false
+            visible = false
         }
         const handleOk = () => {
             close()
-            emit('ok', selectedIcon.value)
+            emit('ok', selectedIcon)
         }
         
         expose({
@@ -28,35 +29,35 @@ export default defineComponent({
 
         return () => {
             return (
-               <NModal show={ visible.value }>
+               <NModal show={ visible }>
                    <NCard style={ 'width: 600px' }
-                                title='图标'
-                                bordered={ false } 
-                                size="huge"
-                                closable
-                                aria-modal={ true }
-                                segmented={ true }
-                                onClose={ close }>
-                                {{
-                                    default: () => (
-                                        <NScrollbar style="max-height: 260px">
-                                            <NSpace size="large">                                           
-                                                {
-                                                    Object.keys(antd).map(item => {
-                                                        return <NButton onClick={ () => selectedIcon.value = item } ><NIcon size={20} component={ antd[item] } /></NButton>
-                                                    })
-                                                }                                          
-                                            </NSpace>
-                                        </NScrollbar>
-                                    ),
-                                    action: () => (
-                                        <NSpace style={ 'justifyContent: flex-end' }>
-                                            <NButton onClick={ close }>关闭</NButton>
-                                            <NButton type="primary" onClick={ handleOk }>确定</NButton>
-                                        </NSpace>
-                                    )
-                                }}
-                        </NCard>
+                        title='图标'
+                        bordered={ false } 
+                        size="huge"
+                        closable
+                        aria-modal={ true }
+                        segmented={ true }
+                        onClose={ close }>
+                        {{
+                            default: () => (
+                                <NScrollbar style="max-height: 260px">
+                                    <NSpace size="large">                                           
+                                        {
+                                            Object.keys(antd).map((item:string) => {
+                                                return <NButton onClick={ () => selectedIcon = item } ><NIcon size={20} component={ antd[item] as Component } /></NButton>
+                                            })
+                                        }                                          
+                                    </NSpace>
+                                </NScrollbar>
+                            ),
+                            action: () => (
+                                <NSpace style={ 'justifyContent: flex-end' }>
+                                    <NButton onClick={ close }>关闭</NButton>
+                                    <NButton type="primary" onClick={ handleOk }>确定</NButton>
+                                </NSpace>
+                            )
+                        }}
+                    </NCard>
                </NModal>
             )
         }

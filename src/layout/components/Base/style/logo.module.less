@@ -1,0 +1,36 @@
+// 用固定不是很完美，滚动条还是算在里面
+.logo-container {
+  width: 200px;
+  height: 50px;
+  max-width: 200px;
+  border-bottom: solid 1px var(--n-border-color);
+  background-color: var(--n-color);
+  z-index: 2;
+  transition: color 0.3s var(--n-bezier), border-color 0.3s var(--n-bezier),
+    min-width 0.3s var(--n-bezier), max-width 0.3s var(--n-bezier),
+    transform 0.3s var(--n-bezier), background-color 0.3s var(--n-bezier);
+
+  .logo-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 36px;
+      height: 36px;
+    }
+
+    span {
+      font-weight: 700;
+      font-size: 18px;
+      opacity: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      margin-left: 10px;
+      transition: margin-left 0.3s var(--n-bezier), color 0.3s var(--n-bezier),
+        opacity 0.3s var(--n-bezier);
+    }
+  }
+}

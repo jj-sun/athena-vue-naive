@@ -8,9 +8,9 @@ export default defineComponent({
     emits: ['ok'],
     setup(props, { emit,expose }) {
 
-        const confirmLoading = ref(false)
+        let confirmLoading = $ref(false)
 
-        const form = ref({
+        let form = $ref({
             id: '',
             dictName: '',
             dictCode: '',
@@ -41,24 +41,24 @@ export default defineComponent({
             // @ts-ignore
             getAction(`/sys/dict/info/${id}`).then((res: Result<any>) => {
                 if(res.success) {
-                    form.value = res.result
+                    form = res.result
                 }
             })
         }
         const submitForm = () => {
             formRef.value.validate((error: Array<FormValidationError>) => {
                 if (!error) {
-                    confirmLoading.value = true
+                    confirmLoading = true
                     let httpurl = '';
                     let method: Method = 'put';
-                    if (!form.value.id) {
+                    if (!form.id) {
                         httpurl = '/sys/dict/save';
                         method = 'post';
                     } else {
                         httpurl = '/sys/dict/update';
                         method = 'put';
                     }
-                    let formData = Object.assign({}, form.value);
+                    let formData = Object.assign({}, form);
                     console.log("表单提交数据", formData);
                     // @ts-ignore
                     httpAction(httpurl, formData, method).then((res: Result<any>) => {
@@ -69,7 +69,7 @@ export default defineComponent({
                             window.$message.warning(res.message);
                         }
                     }).finally(() => {
-                        confirmLoading.value = false
+                        confirmLoading = false
                     })
                 } 
             })
@@ -83,20 +83,20 @@ export default defineComponent({
 
         return () => {
             return (
-                <NSpin show={confirmLoading.value}>
-                    <NForm model={form.value} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
+                <NSpin show={confirmLoading}>
+                    <NForm model={form} ref={formRef} rules={rules} size="medium" labelPlacement={'left'} labelWidth={80}>
                         <NGrid cols={24} x-xGap={24}>
 
                             <NFormItemGi span={24} path="dictName" label="字典名称">
-                                <NInput v-model:value={form.value.dictName} />
+                                <NInput v-model:value={form.dictName} />
                             </NFormItemGi>
                             <NFormItemGi span={24} path="dictCode" label="字典编码">
-                                <NInput v-model:value={form.value.dictCode} />
+                                <NInput v-model:value={form.dictCode} />
                             </NFormItemGi>
 
                             <NFormItemGi span={24} path="type" label="字典类型">
                                 {/* <NInput v-model:value={form.value.type} /> */}
-                                <NRadioGroup v-model:value={form.value.type}>
+                                <NRadioGroup v-model:value={form.type}>
                                     <NSpace>
                                         <NRadio value={ 0 }>字符</NRadio>
                                         <NRadio value={ 1 }>数字</NRadio>
@@ -105,7 +105,7 @@ export default defineComponent({
                             </NFormItemGi>
 
                             <NFormItemGi span={24} label="描述">
-                                <NInput type="textarea" v-model:value={form.value.description} />
+                                <NInput type="textarea" v-model:value={form.description} />
                             </NFormItemGi>
                         </NGrid>
                     </NForm>

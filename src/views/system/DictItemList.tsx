@@ -40,12 +40,17 @@ const createColumns = ( { edit, handleDelete }: { edit: (id:string) => void,hand
             key: 'action',
             fixed: 'right',
             render(rowData: DataItem) {
-                return [h('a', { onClick: () => edit(rowData.id), style: {
-                        color: '#18a058'
-                    } }, { default: () => '编辑' } ),
-                    h(NDivider, { vertical: true }),
-                    h(NPopconfirm,{ onPositiveClick: () => handleDelete(rowData.id) }, { default: () => '确定删除?', trigger: () => h('a', { style:{ color: '#18a058' } }, '删除')})
-                    ]
+                return (
+                    <NSpace>
+                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
+                            {{
+                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                default: () => '确定删除?'
+                            }}
+                        </NPopconfirm>
+                    </NSpace>
+                )
             }
         }
     ]
