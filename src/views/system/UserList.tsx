@@ -189,7 +189,7 @@ export default defineComponent({
                                 <a style="font-weight: 600">{ checkedRowKeysRef.value.length }</a>项
                                 <a style={ "margin-left: 24px;color: #18a058" } onClick={ clearSelected }>清空</a>
                             </NAlert>
-                            <NDataTable remote scrollX={ 200 } loading={ loading.value } columns={ createColumns( {edit, handleDelete} ) } data={data.value} pagination={ pagination as PaginationProps } rowKey={ rowKey } onUpdateCheckedRowKeys={ handleCheck }/>
+                            <NDataTable remote loading={ loading.value } columns={ createColumns( {edit, handleDelete} ) } data={data.value} pagination={ pagination as PaginationProps } rowKey={ rowKey } onUpdateCheckedRowKeys={ handleCheck }/>
                         </div>
                         <UserModal ref={ modalForm } onOk={ modalFormOk } ></UserModal>
 

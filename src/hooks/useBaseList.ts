@@ -1,4 +1,3 @@
-import { Ref } from 'vue';
 import { RowKey } from 'naive-ui/lib/data-table/src/interface';
 import { getAction, deleteAction } from "@/api/manage";
 
