@@ -46,7 +46,8 @@ export default defineComponent({
                     render(rowData: DataItem) {
                         let type = rowData.status === 0 ? 'success' : 'error'
                         let name = rowData.status === 0 ? '正常' : '暂停'
-                        return h(NTag, { type: type, size: 'small' }, { default: () => name })
+                        return (<NTag type={type} size='small'>{name}</NTag>)
+                        //return h(NTag, { type: type, size: 'small' }, { default: () => name })
                     }
                 }, {
                     title: '操作',
@@ -55,29 +56,29 @@ export default defineComponent({
                     render(rowData: DataItem) {
                         return (
                             <NSpace>
-                                <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                                <NButton secondary size="tiny" type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
                                 <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
                                     {{
-                                        trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                        trigger: () => (<NButton secondary size="tiny" type='error'>删除</NButton>),
                                         default: () => '确定删除?'
                                     }}
                                 </NPopconfirm>
                                 <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.pause,rowData.id) }>
                                     {{
-                                        trigger: () => (<NButton text tag='a' type='primary'>暂停</NButton>),
+                                        trigger: () => (<NButton secondary size="tiny" type='primary'>暂停</NButton>),
                                         default: () => '确定暂停?'
                                     }}
                                 </NPopconfirm>
                                 <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.resume,rowData.id) }>
                                     {{
-                                        trigger: () => (<NButton text tag='a' type='primary'>恢复</NButton>),
+                                        trigger: () => (<NButton secondary size="tiny" type='primary'>恢复</NButton>),
                                         default: () => '确定恢复?'
                                     }}
                                     
                                 </NPopconfirm>
                                 <NPopconfirm onPositiveClick={ () => handleSchduleJob(url.run,rowData.id) }>
                                     {{
-                                        trigger: () => (<NButton text tag='a' type='primary'>立即执行</NButton>),
+                                        trigger: () => (<NButton secondary size="tiny" type='primary'>立即执行</NButton>),
                                         default: () => '确定立即执行?'
                                     }}
                                     

@@ -58,11 +58,11 @@ const createColumns = ( { addSubordinate,edit, handleDelete } ): Array<DataTable
             render(rowData: DataItem) {
                 return (
                     <NSpace>
-                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
-                        <NButton text tag='a' type='primary' onClick={ () => addSubordinate(rowData.id) }>添加下级</NButton>
+                        <NButton secondary size="tiny" type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NButton secondary size="tiny" type='primary' onClick={ () => addSubordinate(rowData.id) }>添加下级</NButton>
                         <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
                             {{
-                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                trigger: () => (<NButton secondary size="tiny" type='error'>删除</NButton>),
                                 default: () => '确定删除?'
                             }}
                         </NPopconfirm>

@@ -37,10 +37,10 @@ const createColumns = ( { edit, handleDelete }:{ edit: (id:string) => void, hand
             render(rowData: DataItem) {
                 return (
                     <NSpace>
-                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NButton secondary size="tiny" type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
                         <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
                             {{
-                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                trigger: () => (<NButton secondary size="tiny" type='error'>删除</NButton>),
                                 default: () => '确定删除?'
                             }}
                         </NPopconfirm>

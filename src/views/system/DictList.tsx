@@ -54,11 +54,11 @@ const createColumns = ( { edit,handleDictItemEdit, handleDelete } ): Array<DataT
             render(rowData: DataItem) {
                 return (
                     <NSpace>
-                        <NButton text tag='a' type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
-                        <NButton text tag='a' type='primary' onClick={ () => handleDictItemEdit(rowData.id) }>字典编辑</NButton>
+                        <NButton secondary size="tiny" type='primary' onClick={ () => edit(rowData.id) }>编辑</NButton>
+                        <NButton secondary size="tiny" type='primary' onClick={ () => handleDictItemEdit(rowData.id) }>字典编辑</NButton>
                         <NPopconfirm onPositiveClick={ () => handleDelete(rowData.id) }>
                             {{
-                                trigger: () => (<NButton text tag='a' type='error'>删除</NButton>),
+                                trigger: () => (<NButton secondary size="tiny" type='error'>删除</NButton>),
                                 default: () => '确定删除?'
                             }}
                         </NPopconfirm>

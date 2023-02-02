@@ -13,6 +13,7 @@ import {
 } from '@vicons/antd'
 import { renderIcon } from '@/utils'
 import { useSettingStore } from '@/store'
+import { useUserStore } from '@/store' 
 import TriggerCollapse from '../TriggerCollapse'
 import type { MenuMode, TriggerStyle } from '@/settings'
 import Breadcrumb from '../Breadcrumb'
@@ -35,6 +36,7 @@ const BaseHeader = defineComponent({
   },
   setup(props) {
     const settingStore = useSettingStore()
+    const userStore = useUserStore()
     const { isShowBreadcrumb, isShowBreadcrumbIcon } = $(
       storeToRefs(settingStore)
     )
@@ -70,7 +72,9 @@ const BaseHeader = defineComponent({
         case 'setting':
           settingStore.changeSetting('isShowDraw', true)
           break
-
+        case 'logout':
+          userStore.logout()
+          break;
         default:
           break
       }

@@ -97,8 +97,8 @@ export default defineComponent({
 
 
         onMounted(() => {
-            loadRoleSelect(roleSelectOptions)
-            loadDeptTree(deptTreeOptions)
+            loadRoleSelect($$(roleSelectOptions))
+            loadDeptTree($$(deptTreeOptions))
         })
 
         expose({

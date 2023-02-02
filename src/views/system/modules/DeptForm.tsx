@@ -82,7 +82,7 @@ export default defineComponent({
         }
 
         onMounted(() => {
-            loadDeptTree(treeSelectOptions)
+            loadDeptTree($$(treeSelectOptions))
         })
 
         expose({

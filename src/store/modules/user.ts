@@ -101,6 +101,7 @@ export const useUserStore = defineStore ('user', {
         localStorage.removeItem(USER_INFO)
         logout(logoutToken).then(() => {
           router.replace('/login')
+          window.location.reload()
         }).catch(() => {
 
         })
